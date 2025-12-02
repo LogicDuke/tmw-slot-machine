@@ -47,9 +47,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 12px;
   justify-self: start;
+  margin: 0;
+  padding: 0;
 }
 
 .slot-btn {
@@ -143,8 +145,10 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  gap: 8px;
+  gap: 12px;
   justify-self: end;
+  margin: 0;
+  padding: 0;
 }
 
 .slot-result {
@@ -196,23 +200,6 @@
   100% {
     transform: scale(1);
     opacity: 1;
-  }
-}
-
-/* v1.1.3p — Show Surprise on Mobile (override old mobile hide) */
-@media (max-width: 991px) {
-  .tmw-slot-placeholder {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-height: 120px !important;
-  }
-  .tmw-surprise-img {
-    display: block !important;
-    width: clamp(140px, 60vw, 260px) !important;
-    height: auto !important;
-    margin: 0 auto !important;
-    transform: none !important;
   }
 }
 
@@ -275,8 +262,10 @@
 /* === MOBILE SLOT LAYOUT (≤700px) === */
 @media (max-width: 700px) {
   .tmw-slot-machine {
-    max-width: 100%;
-    padding: 12px 14px;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 16px 10px !important;
     box-shadow: 0 0 18px rgba(255, 51, 102, 0.9);
   }
 
@@ -286,16 +275,14 @@
     text-align: center;
   }
 
-  .slot-body {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      'center'
-      'left'
-      'right';
-    align-items: center;
-    justify-items: center;
-    row-gap: 8px;
-    padding: 8px 0;
+  .tmw-slot-machine .slot-body {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    row-gap: 10px !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
     text-align: center;
   }
 
@@ -306,17 +293,16 @@
     margin: 0;
   }
 
-  .slot-reels {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 0;
+  .tmw-slot-machine .slot-reels {
+    justify-content: center !important;
+    gap: 12px !important;
+    margin-top: 8px !important;
+    margin-bottom: 0;
   }
 
-  .reel {
-    width: 70px;
-    height: 70px;
+  .tmw-slot-machine .reel {
+    width: 80px !important;
+    height: 80px !important;
   }
 
   .slot-left {
@@ -332,32 +318,35 @@
     justify-self: center;
   }
 
-  .slot-btn {
+  .tmw-slot-machine .slot-btn {
+    width: 90% !important;
+    max-width: 300px !important;
+    margin: 0 auto !important;
+    font-size: 1rem !important;
+    padding: 12px 0 !important;
+    border-radius: 9999px !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 9999px !important;
-    padding: 8px 34px !important;
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 1;
     min-width: auto !important;
     height: auto !important;
-    transform: none !important;
+    line-height: 1;
     gap: 6px;
   }
 
-  .slot-right {
+  .tmw-slot-machine .slot-right {
     width: 100%;
-    align-items: center;
-    text-align: center;
-    gap: 4px;
+    margin-top: 8px !important;
+    align-items: center !important;
+    justify-content: center !important;
     justify-self: center;
+    gap: 4px;
+    text-align: center;
   }
 
-  .slot-result {
-    margin-top: 6px;
-    font-size: 16px;
+  .tmw-slot-machine .slot-result {
+    margin-top: 6px !important;
+    font-size: 1rem !important;
     font-weight: 700;
     color: var(--tmw-accent-color, #ff3366);
     animation: heartbeatWin 1.4s infinite ease-in-out;
@@ -367,6 +356,10 @@
     font-size: 13px;
     color: #ccc;
     margin-top: 2px;
+  }
+
+  .tmw-slot-machine .sound-toggle {
+    margin-top: 6px !important;
   }
 }
 
@@ -394,7 +387,6 @@
 @media (max-width: 768px) {
   .tmw-slot-machine {
     padding: 1rem;
-    min-height: 420px;
   }
 
   .slot-body {
@@ -567,33 +559,6 @@ body .tmw-slot-machine *:not(button):not(.slot-btn):not(.tmw-claim-bonus) {
   color: #ffffff !important;
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.25);
 }
-/* === Stable Grid Alignment (v1.1.3j) === */
-.tmw-slot-machine .slot-body {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  grid-template-areas: 'left center right';
-  align-items: center;
-  column-gap: 25px;
-}
-
-/* Make both button sections align neatly */
-.tmw-slot-machine .slot-left,
-.tmw-slot-machine .slot-right {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-}
-
-/* Center reels between both buttons */
-.tmw-slot-machine .slot-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* === Slightly Smaller Button Size (v1.1.3l) === */
 .tmw-slot-machine .slot-btn,
 .tmw-slot-machine .slot-right .tmw-claim-bonus {
@@ -630,29 +595,6 @@ body .tmw-slot-machine *:not(button):not(.slot-btn):not(.tmw-claim-bonus) {
   transform: scale(1.05);
 }
 /* === v1.4.8d Center Surprise Image + Remove Empty Gap === */
-@media (min-width: 992px) {
-  /* Center the surprise image vertically + horizontally */
-  .slot-right {
-    justify-content: center !important;
-    align-items: center !important;
-  }
-
-  .tmw-slot-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 120px;
-  }
-
-  .tmw-slot-placeholder .tmw-surprise-img {
-    position: relative;
-    margin: 0 auto;
-    top: 0;
-    left: 0;
-    transform: none;
-  }
-}
-
 /* Collapse placeholder when image removed */
 .tmw-slot-placeholder:empty {
   min-height: 0 !important;
@@ -703,65 +645,6 @@ body .tmw-slot-machine *:not(button):not(.slot-btn):not(.tmw-claim-bonus) {
   }
 }
 
-/* === v1.4.8i — Mobile Layout Optimization === */
-@media (max-width: 700px) {
-  /* Stretch slot box full width */
-  .tmw-slot-machine {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    padding: 16px 10px !important;
-  }
-
-  /* Center everything vertically */
-  .tmw-slot-machine .slot-body {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    row-gap: 10px !important;
-    padding: 0 !important;
-    margin: 0 auto !important;
-  }
-
-  /* Scale reels slightly larger for better tap size */
-  .tmw-slot-machine .slot-reels {
-    justify-content: center !important;
-    gap: 12px !important;
-    margin-top: 8px !important;
-  }
-
-  .tmw-slot-machine .reel {
-    width: 80px !important;
-    height: 80px !important;
-  }
-
-  /* Make buttons proportional and centered */
-  .tmw-slot-machine .slot-btn {
-    width: 90% !important;
-    max-width: 300px !important;
-    margin: 0 auto !important;
-    font-size: 1rem !important;
-    padding: 12px 0 !important;
-  }
-
-  .tmw-slot-machine .sound-toggle {
-    margin-top: 6px !important;
-  }
-
-  /* Balance spacing after spin */
-  .tmw-slot-machine .slot-right {
-    margin-top: 8px !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  .tmw-slot-machine .slot-result {
-    margin-top: 6px !important;
-    font-size: 1rem !important;
-  }
-}
-/* === v1.1.3m — Show Surprise on Mobile (override old mobile hide) === */
 @media (max-width: 991px) {
   .tmw-slot-placeholder {
     display: flex !important;
@@ -771,58 +654,8 @@ body .tmw-slot-machine *:not(button):not(.slot-btn):not(.tmw-claim-bonus) {
   }
 
   .tmw-surprise-img {
-    display: block !important;           /* override previous display:none */
-    width: clamp(140px, 60vw, 260px) !important;
-    height: auto !important;
-    margin: 0 auto !important;
-    transform: none !important;
-  }
-}
-/* v1.1.3n — Show Surprise on Mobile (override old mobile hide) */
-@media (max-width: 991px) {
-  .tmw-surprise-img {
-    display: block !important;     /* overrides old display:none */
-    width: clamp(140px, 60vw, 260px) !important;
-    height: auto !important;
-    margin: 0 auto !important;
-  }
-}
-
-/* v1.1.3p — Final guard to ensure visibility on small screens */
-@media (max-width: 991px) {
-  html body .tmw-slot-machine .tmw-slot-placeholder .tmw-surprise-img,
-  html body .tmw-surprise-img {
     display: block !important;
-  }
-}
-
-/* v1.4.8p — Show Surprise on Mobile (override old mobile hide) */
-@media (max-width: 991px) {
-  .tmw-surprise-img {
-    display: block !important;               /* override previous display:none */
-    width: clamp(140px, 60vw, 260px) !important;
-    height: auto !important;
-    margin: 0 auto !important;
-  }
-}
-
-/* Final guard in case of minification/merge order */
-@media (max-width: 991px) {
-  html body .tmw-surprise-img { display: block !important; }
-}
-/* v1.4.8r — Mobile Surprise PNG sizing & centering */
-@media (max-width: 991px) {
-  /* center its row without changing the rest of the layout */
-  .tmw-slot-placeholder {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* make the surprise image smaller on phones */
-  .tmw-surprise-img {
-    display: block !important;
-    width: clamp(90px, 34vw, 150px) !important; /* ↓ smaller than before */
+    width: clamp(90px, 34vw, 150px) !important;
     height: auto !important;
     margin: 12px auto 0 !important;
     transform: none !important;
@@ -904,5 +737,20 @@ body .tmw-slot-machine *:not(button):not(.slot-btn):not(.tmw-claim-bonus) {
 /* (optional, more targeted: only when it follows the slot in the same tab) */
 .single-model .entry-content .tmw-slot-machine ~ .post-tags.entry-tags{
   pointer-events: none !important;
+}
+
+/* === Stable Height to Prevent CLS on Model Pages === */
+@media (min-width: 992px) {
+  .single-model .tmw-slot-banner,
+  .single-model .tmw-slot-machine {
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 991px) {
+  .single-model .tmw-slot-banner,
+  .single-model .tmw-slot-machine {
+    min-height: 350px;
+  }
 }
 
