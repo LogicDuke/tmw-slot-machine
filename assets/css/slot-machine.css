@@ -1,756 +1,282 @@
-/* === SLOT CONTAINER === */
+/* =====================================================================
+   TMW Slot Machine Widget - Optimized Styles
+   ===================================================================== */
+
+:root {
+  --tmw-spin-orange: #ff7a00;
+  --tmw-claim-red: #e53935;
+  --tmw-accent: #ffffff;
+  --tmw-black: #000000;
+  --tmw-black-rgb: 0 0 0;
+  --tmw-white-rgb: 255 255 255;
+  --tmw-shadow: 0 10px 30px rgba(var(--tmw-black-rgb) / 0.2);
+  --tmw-border: 1px solid rgba(var(--tmw-white-rgb) / 0.15);
+  --tmw-spin-dark: color-mix(in srgb, var(--tmw-spin-orange) 70%, var(--tmw-black) 30%);
+  --tmw-claim-dark: color-mix(in srgb, var(--tmw-claim-red) 70%, var(--tmw-black) 30%);
+  --tmw-panel-bg: rgba(var(--tmw-black-rgb) / 0.35);
+  --tmw-soft-bg: rgba(var(--tmw-white-rgb) / 0.05);
+  --tmw-chip-bg: rgba(var(--tmw-white-rgb) / 0.08);
+}
+
+/* =====================================================================
+   Base Layout
+   ===================================================================== */
+
 .tmw-slot-machine {
-  /* Force neutral accent color inside plugin scope */
-  --tmw-accent-color: #ffffff;
-  width: 100%;
-  max-width: 970px;
-  margin: 0 auto 10px auto;
-  background: #0a0a0a;
-  border-radius: 10px;
-  padding: 10px 15px;
-  position: relative;
-  box-shadow: 0 0 22px rgba(255, 0, 50, 0.85); /* vivid red glow */
-  transition: box-shadow 0.3s ease-in-out;
-  color: #fff;
-  font-family: 'Arial', sans-serif;
+  color: var(--tmw-accent);
+  min-height: 250px;
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--tmw-panel-bg);
+  box-shadow: var(--tmw-shadow);
+  display: block;
+  pointer-events: none !important;
+  transform: translateZ(0);
 }
 
-.tmw-slot-machine:hover {
-  box-shadow: 0 0 30px rgba(255, 0, 60, 1);
+.tmw-slot-machine * {
+  color: inherit;
+  font-family: inherit;
+  box-sizing: border-box;
 }
 
-/* === HEADLINE === */
-.slot-headline {
+.slot-headline,
+.slot-title,
+.slot-heading {
+  color: var(--tmw-accent);
   text-align: center;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--tmw-accent-color, #ff3366);
-  margin-bottom: 10px;
-  letter-spacing: 0.5px;
-  text-shadow: 0 0 10px rgba(255, 51, 102, 0.7);
+  margin: 0 0 16px;
 }
 
-/* === CORE LAYOUT (GRID) === */
 .slot-body {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  grid-template-areas: 'left center right';
+  gap: 24px;
   align-items: center;
-  column-gap: 25px;
-  width: 100%;
-  padding: 0;
+  position: relative;
+  pointer-events: none !important;
 }
 
-/* === BUTTON === */
-.slot-left {
-  grid-area: left;
+.slot-left,
+.slot-center,
+.slot-right {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 12px;
-  justify-self: start;
-  margin: 0;
-  padding: 0;
-}
-
-.slot-btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-weight: 700;
-  font-size: 16px;
-  white-space: nowrap;
-  padding: 10px 32px;
-  border-radius: 9999px;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  z-index: 5;
-  line-height: 1;
-}
-
-/* --- Equal Button Size --- */
-.slot-btn,
-.slot-right .tmw-claim-bonus {
-  min-width: 200px;
-  min-height: 54px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   text-align: center;
 }
 
-.slot-btn.is-busy {
-  cursor: wait;
-  opacity: 0.85;
+/* =====================================================================
+   Buttons & Controls
+   ===================================================================== */
+
+.slot-btn,
+.tmw-claim-bonus,
+.sound-toggle {
+  pointer-events: auto !important;
 }
 
-.slot-btn:hover {
-  transform: scale(1.05);
+.slot-btn,
+.tmw-claim-bonus {
+  min-width: 200px;
+  min-height: 52px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  box-shadow: var(--tmw-shadow);
+  transition: transform 0.2s ease, filter 0.2s ease;
+  will-change: transform;
 }
 
-
-.slot-btn.claim,
-.slot-btn.spin-again {
-  display: inline-flex;
-  position: relative;
-  z-index: 1;
+.slot-btn {
+  background: linear-gradient(180deg, var(--tmw-spin-orange) 0%, var(--tmw-spin-dark) 100%);
 }
 
-.slot-btn.claim.active + .slot-btn.spin-again,
-.slot-btn.spin-again.active + .slot-btn.claim {
-  display: none;
+.tmw-claim-bonus {
+  background: linear-gradient(180deg, var(--tmw-claim-red) 0%, var(--tmw-claim-dark) 100%);
+  animation: heartbeat 1.8s ease-in-out infinite;
 }
 
-/* Runtime safety: hide any unexpected duplicate buttons immediately */
-.slot-container button:not(:first-of-type) {
-  display: none !important;
+.slot-btn:hover,
+.tmw-claim-bonus:hover {
+  filter: brightness(0.98);
+  transform: translateY(-1px);
 }
 
-/* === REELS === */
+.slot-btn:active,
+.tmw-claim-bonus:active {
+  filter: brightness(0.92);
+  transform: translateY(0);
+}
+
+.sound-toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: var(--tmw-border);
+  background: var(--tmw-chip-bg);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--tmw-shadow);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.sound-toggle:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* =====================================================================
+   Reels & Center Column
+   ===================================================================== */
+
 .slot-center {
-  grid-area: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  justify-self: center;
+  min-width: 320px;
 }
 
 .slot-reels {
   display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 12px;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  border-radius: 16px;
+  border: var(--tmw-border);
+  background: var(--tmw-soft-bg);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .reel {
-  width: 90px;   /* reduced from 110px */
+  width: 90px;
   height: 90px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-color: transparent !important;
-  border: none;
-  box-shadow: none;
+  border-radius: 12px;
+  background: var(--tmw-chip-bg);
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
-/* === RIGHT SIDE === */
+/* =====================================================================
+   Right Column (Result / Win)
+   ===================================================================== */
+
 .slot-right {
-  grid-area: right;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  gap: 12px;
-  justify-self: end;
-  margin: 0;
-  padding: 0;
+  gap: 16px;
 }
 
-.slot-result {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--tmw-accent-color, #ff3366);
-  text-align: center;
+.slot-result,
+.tmw-win-message,
+.tmw-prize-text {
+  color: var(--tmw-accent);
   margin: 0;
-  padding: 0;
-  opacity: 0;
-  transition: opacity 0.3s ease-in;
 }
 
-.slot-result.show {
-  opacity: 1;
+.slot-result.win-text {
+  animation: pulseWin 1.5s ease-in-out infinite;
+}
+
+/* =====================================================================
+   Surprise Image
+   ===================================================================== */
+
+.tmw-slot-placeholder {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
 }
 
 .tmw-surprise-img {
-  width: 120px;
+  max-width: 100%;
   height: auto;
-  display: block;
-  margin: 0 auto;
-  animation: popIn 0.6s ease;
+  animation: popIn 0.6s ease-out;
+  transform: translateZ(0);
+  will-change: transform, opacity;
 }
 
-.tmw-slot-placeholder {
-  min-height: 120px; /* adjust to your slot height */
-}
+/* =====================================================================
+   Animations
+   ===================================================================== */
 
-@media (min-width: 992px) {
-  .tmw-slot-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
   }
+  50% {
+    transform: scale(1.05);
+  }
+}
 
-  .tmw-slot-placeholder .tmw-surprise-img {
-    margin: 0;
-    position: static;
-    transform: none;
+@keyframes pulseWin {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 0.7;
   }
 }
 
 @keyframes popIn {
   0% {
-    transform: scale(0.5);
     opacity: 0;
+    transform: scale(0.9);
   }
   100% {
-    transform: scale(1);
     opacity: 1;
-  }
-}
-
-.tmw-win-message {
-  font-size: 1.2rem;
-  color: inherit; /* color:#ff0033 removed — text now inherits */
-  text-align: center;
-  margin-top: 10px;
-  font-weight: 600;
-}
-
-.tmw-prize-text {
-  color: inherit; /* color:#ff0033 removed — text now inherits */
-  font-weight: 700;
-  text-shadow: 0 0 8px rgba(255, 0, 51, 0.4);
-}
-
-/* === Offer text heartbeat animation === */
-@keyframes heartbeatWin {
-  0%, 100% {
-    color: #ff3366;
-    text-shadow: 0 0 8px rgba(255, 51, 102, 0.9);
     transform: scale(1);
   }
-  50% {
-    color: #ffffff;
-    text-shadow: 0 0 12px rgba(255, 51, 102, 0.9);
-    transform: scale(1.05);
+}
+
+/* =====================================================================
+   Accessibility
+   ===================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .tmw-slot-machine *,
+  .tmw-claim-bonus,
+  .slot-result.win-text,
+  .tmw-surprise-img {
+    animation: none;
+    transition: none;
   }
 }
 
-/* Apply animation only to clickable offer links */
-.slot-offer-link {
-  color: var(--tmw-accent-color, #ff3366);
-  text-decoration: none;
-  font-weight: 700;
-  animation: heartbeatWin 1.4s infinite ease-in-out;
-}
+/* =====================================================================
+   Responsive (<= 991px)
+   ===================================================================== */
 
-.slot-offer-link:hover {
-  text-decoration: underline;
-  animation: none; /* stops flashing while hovered */
-}
-
-/* === Neon pulse effect for spin button === */
-@keyframes neonPulse {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(255, 51, 102, 0.9);
-  }
-  50% {
-    box-shadow: 0 0 18px rgba(255, 102, 153, 1);
-  }
-}
-
-.slot-btn:active,
-.slot-btn:hover {
-  animation: neonPulse 0.8s ease-in-out;
-}
-
-/* === MOBILE SLOT LAYOUT (≤700px) === */
-@media (max-width: 700px) {
+@media (max-width: 991px) {
   .tmw-slot-machine {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    padding: 16px 10px !important;
-    box-shadow: 0 0 18px rgba(255, 51, 102, 0.9);
-  }
-
-  .slot-headline {
-    font-size: 18px;
-    margin-bottom: 8px;
-    text-align: center;
-  }
-
-  .tmw-slot-machine .slot-body {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    row-gap: 10px !important;
-    padding: 0 !important;
-    margin: 0 auto !important;
-    text-align: center;
-  }
-
-  .slot-center {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin: 0;
-  }
-
-  .tmw-slot-machine .slot-reels {
-    justify-content: center !important;
-    gap: 12px !important;
-    margin-top: 8px !important;
-    margin-bottom: 0;
-  }
-
-  .tmw-slot-machine .reel {
-    width: 80px !important;
-    height: 80px !important;
-  }
-
-  .slot-left {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    background: transparent !important;
-    height: auto !important;
-    gap: 10px;
-    justify-self: center;
-  }
-
-  .tmw-slot-machine .slot-btn {
-    width: 90% !important;
-    max-width: 300px !important;
-    margin: 0 auto !important;
-    font-size: 1rem !important;
-    padding: 12px 0 !important;
-    border-radius: 9999px !important;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: auto !important;
-    height: auto !important;
-    line-height: 1;
-    gap: 6px;
-  }
-
-  .tmw-slot-machine .slot-right {
-    width: 100%;
-    margin-top: 8px !important;
-    align-items: center !important;
-    justify-content: center !important;
-    justify-self: center;
-    gap: 4px;
-    text-align: center;
-  }
-
-  .tmw-slot-machine .slot-result {
-    margin-top: 6px !important;
-    font-size: 1rem !important;
-    font-weight: 700;
-    color: var(--tmw-accent-color, #ff3366);
-    animation: heartbeatWin 1.4s infinite ease-in-out;
-  }
-
-  .sound-toggle {
-    font-size: 13px;
-    color: #ccc;
-    margin-top: 2px;
-  }
-
-  .tmw-slot-machine .sound-toggle {
-    margin-top: 6px !important;
-  }
-}
-
-/* WINNING TEXT HEARTBEAT + BOUNCE */
-.slot-result.win-text {
-  animation: pulseWin 1.5s infinite ease-in-out;
-  font-weight: 700;
-  color: inherit; /* color:#ff2a2a removed — text now inherits */
-  transition: opacity 0.3s ease-in, transform 0.25s ease;
-  cursor: pointer;
-}
-
-.slot-result.win-text.revealed {
-  transform: scale(1.1);
-}
-
-/* REEL FADE TRANSITION */
-.slot-reels.fade-out,
-.tmw-reels.fade-out {
-  opacity: 0.3;
-  transition: opacity 0.6s ease;
-}
-
-/* RESPONSIVE MOBILE IMPROVEMENTS */
-@media (max-width: 768px) {
-  .tmw-slot-machine {
-    padding: 1rem;
+    min-height: 350px;
+    padding: 20px;
   }
 
   .slot-body {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      'center'
-      'left'
-      'right';
-    align-items: center;
-    justify-items: center;
-    row-gap: 14px;
+    display: flex;
+    flex-direction: column;
   }
 
-  .slot-left,
-  .slot-right {
-    width: 100%;
+  .slot-center {
+    min-width: auto;
   }
 
-  .slot-btn {
-    width: 100%;
-    max-width: 320px;
-    font-size: clamp(1rem, 4vw, 1.4rem);
-    height: 52px;
+  .slot-reels {
+    gap: 10px;
   }
 
-  .slot-result.win-text {
-    font-size: clamp(1rem, 4vw, 1.3rem);
+  .reel {
+    width: 80px;
+    height: 80px;
+    font-size: 28px;
   }
 }
-
-@keyframes pulseWin {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.85;
-    transform: scale(1.05);
-  }
-}
-
-/* Claim CTA: default hidden until placed inside the right column */
-.tmw-slot-machine .tmw-claim-bonus {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-/* Claim CTA: show only on the right side */
-.slot-right .tmw-claim-bonus {
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 26px;
-  border-radius: 9999px;
-  font-weight: 700;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  visibility: visible !important;
-}
-
-/* Never allow claim link inside the left panel */
-.slot-left .tmw-claim-bonus {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-/* --- Header text: white --- */
-.slot-heading {
-  color: #fff !important;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-}
-
-/* --- Sound toggle: stable grey style --- */
-.sound-toggle {
-  background-color: #555 !important;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 14px;
-  font-size: 14px;
-  cursor: pointer;
-  opacity: 0.95;
-}
-
-.sound-toggle:hover {
-  background-color: #666 !important;
-}
-
-.sound-toggle.active,
-.sound-toggle:focus {
-  background-color: #555 !important;
-  color: #fff !important;
-  outline: none;
-}
-
-/* --- Claim button heartbeat --- */
-@keyframes heartbeat {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.12);
-  }
-}
-
-.slot-right .tmw-claim-bonus {
-  animation: heartbeat 1.8s ease-in-out infinite;
-}
-
-/* --- Win message smaller font --- */
-.slot-result.win-text.revealed {
-  font-size: 0.9rem;
-}
-
-/* --- White headline text --- */
-.slot-heading,
-.slot-header,
-.slot-container h2,
-.slot-container h3 {
-  color: #fff !important;
-  text-shadow: 0 0 10px rgba(255,255,255,0.3);
-}
-
-/* --- Right-side layout: claim button above win text --- */
-.slot-right {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px; /* space between button and win text */
-}
-
-/* Ensure claim button sits above the win text visually */
-.slot-right .tmw-claim-bonus {
-  order: 0;  /* show first */
-}
-
-.slot-right .slot-result {
-  order: 1;  /* show second */
-}
-
-/* ===== WHITE TEXT OVERRIDE (v1.1.3c) ===== */
-.tmw-slot-machine,
-.tmw-slot-machine .slot-result,
-.tmw-slot-machine .slot-result.win-text,
-.tmw-slot-machine .slot-result h2,
-.tmw-slot-machine .slot-result p,
-.tmw-slot-machine .slot-title,
-.tmw-slot-machine .slot-title span,
-.tmw-slot-machine .slot-result .win-text,
-.tmw-slot-machine .slot-result .win-text span {
-  color: #fff !important;
-}
-
-/* Fix for header still showing red (v1.1.3d) */
-body .tmw-slot-machine .slot-title,
-body .tmw-slot-machine .slot-title *,
-body .tmw-slot-machine h2.slot-title,
-body .tmw-slot-machine h2,
-body .tmw-slot-machine .slot-header {
-  color: #fff !important;
-}
-
-/* --- Final White Text Enforcement (v1.1.3f) --- */
-/* Forces all text (titles, win messages, offers) to white,
-   but keeps button colors untouched. */
-body .tmw-slot-machine,
-body .tmw-slot-machine *:not(button):not(.slot-btn):not(.tmw-claim-bonus) {
-  color: #ffffff !important;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.25);
-}
-/* === Slightly Smaller Button Size (v1.1.3l) === */
-.tmw-slot-machine .slot-btn,
-.tmw-slot-machine .slot-right .tmw-claim-bonus {
-  transform: scale(0.85); /* reduce overall size */
-  min-width: 170px !important; /* slightly smaller base */
-  min-height: 48px !important;
-  padding: 8px 26px !important;
-  font-size: 0.9rem !important;
-}
-
-.tmw-slot-machine .slot-btn:hover,
-.tmw-slot-machine .slot-right .tmw-claim-bonus:hover {
-  transform: scale(0.9); /* smooth hover scaling */
-}
-
-/* === Perfectly Balanced Buttons (v1.1.3n) === */
-.tmw-slot-machine .slot-btn,
-.tmw-slot-machine .slot-right .tmw-claim-bonus {
-  min-width: 200px !important;
-  min-height: 52px !important;
-  padding: 10px 28px !important;
-  font-size: 1rem !important;
-  font-weight: 700 !important;
-  line-height: 1 !important;
-  text-align: center;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Optional hover consistency */
-.tmw-slot-machine .slot-btn:hover,
-.tmw-slot-machine .slot-right .tmw-claim-bonus:hover {
-  transform: scale(1.05);
-}
-/* === v1.4.8d Center Surprise Image + Remove Empty Gap === */
-/* Collapse placeholder when image removed */
-.tmw-slot-placeholder:empty {
-  min-height: 0 !important;
-  display: none !important;
-}
-
-/* === v1.4.8e — Align Right Column Center (Surprise Image Position Audit) === */
-@media (min-width: 992px) {
-  /* Center the entire right column horizontally within the grid */
-  .tmw-slot-machine .slot-right {
-    justify-self: center !important; /* move inward from the edge */
-  }
-
-  /* Reduce horizontal gap for better balance with center reels */
-  .tmw-slot-machine .slot-body {
-    column-gap: 10px !important;
-  }
-}
-/* === v1.4.8f — Reduce Winning Text Font Size for Single-Line Display === */
-@media (min-width: 992px) {
-  .tmw-slot-machine .slot-result.win-text,
-  .tmw-slot-machine .tmw-win-message {
-    font-size: 0.9rem !important;     /* smaller font for long text */
-    white-space: nowrap !important;   /* force single line */
-    line-height: 1.2 !important;
-    text-align: center;
-  }
-
-  /* Optional: if text ever overflows, let it shrink slightly */
-  .tmw-slot-machine .slot-result.win-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 90%;
-    margin: 0 auto;
-  }
-}
-
-/* === v1.4.8h — Fix truncated win text === */
-@media (min-width: 992px) {
-  .tmw-slot-machine .slot-result.win-text,
-  .tmw-slot-machine .tmw-win-message {
-    max-width: 100% !important;     /* allow full text width */
-    white-space: nowrap !important; /* stay one line */
-    overflow: visible !important;   /* no clipping */
-    text-overflow: unset !important;
-    font-size: 0.9rem !important;
-    transform: scale(0.98);         /* gentle shrink for long text */
-  }
-}
-
-@media (max-width: 991px) {
-  .tmw-slot-placeholder {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-height: 120px !important;
-  }
-
-  .tmw-surprise-img {
-    display: block !important;
-    width: clamp(90px, 34vw, 150px) !important;
-    height: auto !important;
-    margin: 12px auto 0 !important;
-    transform: none !important;
-  }
-}
-
-/* =========================================================
-   [TMW-SLOT-UI-COLORS] v1.1.6g — SINGLE SOURCE OF TRUTH
-   Spin Now / Spin Again => ORANGE   (#FF7A00 → #FF3C00)
-   Claim Your Bonus      => RED      (#E53935 → #B90000)
-   ========================================================= */
-.tmw-slot-machine{ --tmw-spin-orange:#FF7A00; --tmw-claim-red:#E53935; --tmw-ring-opacity:.45; }
-
-/* SPIN (left) — Spin Now + Spin Again */
-.tmw-slot-machine .slot-btn{
-  background:linear-gradient(180deg,var(--tmw-spin-orange) 0%,#ff3c00 100%);
-  color:#fff;border:none;box-shadow:0 0 12px rgba(255,122,0,.7);
-}
-.tmw-slot-machine .slot-btn:hover{filter:brightness(.96)}
-.tmw-slot-machine .slot-btn:active{filter:brightness(.9)}
-.tmw-slot-machine .slot-btn:focus-visible{
-  outline:2px solid #fff;outline-offset:2px;
-  box-shadow:0 0 0 3px rgba(255,122,0,var(--tmw-ring-opacity)),0 0 12px rgba(255,122,0,.7)
-}
-
-/* CLAIM (right) — red CTA */
-.tmw-slot-machine .slot-right .tmw-claim-bonus{
-  background:linear-gradient(180deg,var(--tmw-claim-red) 0%,#b90000 100%);
-  color:#fff;border:none;box-shadow:0 0 12px rgba(255,0,0,.7)
-}
-.tmw-slot-machine .slot-right .tmw-claim-bonus:hover{filter:brightness(.96)}
-.tmw-slot-machine .slot-right .tmw-claim-bonus:active{filter:brightness(.9)}
-.tmw-slot-machine .slot-right .tmw-claim-bonus:focus-visible{
-  outline:2px solid #fff;outline-offset:2px;
-  box-shadow:0 0 0 3px rgba(229,57,53,var(--tmw-ring-opacity)),0 0 12px rgba(255,0,0,.7)
-}
-
-/* =========================================================
-   [TMW-SLOT-CLICK-FIX] v1.1.6g — FINAL GUARD (MUST BE LAST)
-   Only Spin / Claim / Sound capture clicks inside the slot.
-   Works even if center visuals mutate.
-   ========================================================= */
-.tmw-slot-machine .slot-body{position:relative}
-
-/* Nuclear default: everything inside the slot ignores clicks */
-.tmw-slot-machine, .tmw-slot-machine *{ pointer-events:none !important; }
-
-/* Re-enable intended controls */
-.tmw-slot-machine .slot-btn,
-.tmw-slot-machine .tmw-claim-bonus,
-.tmw-slot-machine .sound-toggle{
-  pointer-events:auto !important;
-  position:relative; z-index:2147483646 !important;
-}
-
-/* Pseudos must be click-through */
-.tmw-slot-machine::before,
-.tmw-slot-machine::after,
-.tmw-slot-machine .slot-body::before,
-.tmw-slot-machine .slot-body::after { pointer-events:none !important; }
-/* =========================================================
-   [TMW-SLOT-CLICK-FIX] v1.1.6h — external shield neutralizer
-   HUD showed .post-tags.entry-tags covering the slot.
-   1) Raise the entire slot above siblings
-   2) Make the adjacent tags block click-through on model pages
-   ========================================================= */
-
-/* 1) Put the slot above non-positioned / later siblings */
-.tmw-slot-machine{
-  position: relative !important;
-  z-index: 2147483647 !important; /* sit above nearby content */
-}
-
-/* 2) If a tags block sits after the slot, don't let it capture clicks */
-.single-model .entry-content .post-tags.entry-tags{
-  pointer-events: none !important;
-}
-
-/* (optional, more targeted: only when it follows the slot in the same tab) */
-.single-model .entry-content .tmw-slot-machine ~ .post-tags.entry-tags{
-  pointer-events: none !important;
-}
-
-/* === Stable Height to Prevent CLS on Model Pages === */
-@media (min-width: 992px) {
-  .single-model .tmw-slot-banner,
-  .single-model .tmw-slot-machine {
-    min-height: 250px;
-  }
-}
-
-@media (max-width: 991px) {
-  .single-model .tmw-slot-banner,
-  .single-model .tmw-slot-machine {
-    min-height: 350px;
-  }
-}
-
