@@ -10,6 +10,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+if (!defined('TMW_DEBUG')) {
+    define('TMW_DEBUG', false);
+}
+
 define('TMW_SLOT_MACHINE_PATH', plugin_dir_path(__FILE__));
 define('TMW_SLOT_MACHINE_URL', plugin_dir_url(__FILE__));
 
@@ -27,7 +31,7 @@ add_action('init', function() {
             $missing[] = $icon;
         }
     }
-    if (!empty($missing)) {
+    if (!empty($missing) && TMW_DEBUG) {
         error_log('[TMW Slot Machine] Missing icons: ' . implode(', ', $missing));
     }
 });
@@ -152,8 +156,9 @@ add_action('wp_enqueue_scripts', function () {
     $win_probability = max(0, min(100, $win_probability));
 
     $offers = get_option('tmw_slot_machine_offers', []);
-    if (empty($offers) && !empty($settings['offers'])) {
-        $offers = $settings['offers'];
+    $settings_offers = $settings['offers'] ?? [];
+    if (empty($offers) && !empty($settings_offers)) {
+        $offers = $settings_offers;
     }
 
     $headline = get_option('tmw_slot_trigger_headline', TMW_SLOT_MACHINE_DEFAULT_HEADLINE);
