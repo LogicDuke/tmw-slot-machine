@@ -16,8 +16,7 @@ const getIconUrls = (base, icon) => {
   if (!icon) return { webp: '', png: '' };
   const iconName = String(icon).trim();
   if (/^(?:https?:)?\/\//i.test(iconName) || iconName.startsWith('data:')) {
-    const isWebp = iconName.toLowerCase().includes('.webp');
-    return { webp: isWebp ? iconName : '', png: iconName };
+    return { webp: iconName, png: iconName };
   }
   const normalized = iconName.replace(/^\/+/, '').replace(/^img\//, '');
   return { webp: buildAssetUrl(base, `img/${normalized.replace(/\.png$/i, '.webp')}`), png: buildAssetUrl(base, `img/${normalized.replace(/\.webp$/i, '.png')}`) };
@@ -25,9 +24,13 @@ const getIconUrls = (base, icon) => {
 const createPicture = ({ webp, png, alt, width, height, className }) => {
   const picture = document.createElement('picture');
   if (className) picture.className = className;
-  const source = document.createElement('source');
-  source.type = 'image/webp';
-  source.srcset = webp;
+  let source = null;
+  if (webp) {
+    source = document.createElement('source');
+    source.type = 'image/webp';
+    source.srcset = webp;
+    picture.appendChild(source);
+  }
   const img = document.createElement('img');
   img.src = png;
   img.alt = alt || '';
@@ -36,7 +39,6 @@ const createPicture = ({ webp, png, alt, width, height, className }) => {
   img.width = width;
   img.height = height;
   img.draggable = false;
-  picture.appendChild(source);
   picture.appendChild(img);
   return { picture, img, source };
 };
@@ -83,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let picture = reel.querySelector('picture');
       let img = reel.querySelector('img');
       let source = reel.querySelector('source');
-      if (!picture || !img || !source) {
+      if (!picture || !img) {
         reel.textContent = '';
         const created = createPicture({ webp: '', png: '', alt: '', width: 80, height: 80 });
         picture = created.picture; img = created.img; source = created.source; reel.appendChild(picture);
@@ -93,7 +95,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const setReelIcon = (reel, icon) => {
       const { webp, png } = getIconUrls(assetsBase, icon);
       const { img, source } = ensureReelVisual(reel);
-      source.srcset = webp; img.src = png;
+      if (webp) {
+        if (source) {
+          source.srcset = webp;
+        } else {
+          const nextSource = document.createElement('source');
+          nextSource.type = 'image/webp';
+          nextSource.srcset = webp;
+          img.parentElement?.insertBefore(nextSource, img);
+        }
+      } else if (source) {
+        source.remove();
+      }
+      img.src = png;
       const baseName = String(icon || '').split('/').pop() || '';
       img.alt = baseName.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
     };
@@ -134,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const showSurprise = () => {
       if (!placeholder || placeholder.querySelector('.tmw-surprise-img')) return;
-      const { webp, png } = getIconUrls(assetsBase, 'surprice-trans.png');
+      const { webp, png } = getIconUrls(assetsBase, 'surprise-trans.png');
       const created = createPicture({ webp, png, alt: 'Surprise Bonus', width: 120, height: 120, className: 'tmw-surprise-img' });
       placeholder.appendChild(created.picture);
     };
