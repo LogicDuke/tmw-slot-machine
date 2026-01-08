@@ -1,282 +1,34 @@
-/* =====================================================================
-   TMW Slot Machine Widget - Optimized Styles
-   ===================================================================== */
-
-:root {
-  --tmw-spin-orange: #ff7a00;
-  --tmw-claim-red: #e53935;
-  --tmw-accent: #ffffff;
-  --tmw-black: #000000;
-  --tmw-black-rgb: 0 0 0;
-  --tmw-white-rgb: 255 255 255;
-  --tmw-shadow: 0 10px 30px rgba(var(--tmw-black-rgb) / 0.2);
-  --tmw-border: 1px solid rgba(var(--tmw-white-rgb) / 0.15);
-  --tmw-spin-dark: color-mix(in srgb, var(--tmw-spin-orange) 70%, var(--tmw-black) 30%);
-  --tmw-claim-dark: color-mix(in srgb, var(--tmw-claim-red) 70%, var(--tmw-black) 30%);
-  --tmw-panel-bg: rgba(var(--tmw-black-rgb) / 0.35);
-  --tmw-soft-bg: rgba(var(--tmw-white-rgb) / 0.05);
-  --tmw-chip-bg: rgba(var(--tmw-white-rgb) / 0.08);
-}
-
-/* =====================================================================
-   Base Layout
-   ===================================================================== */
-
-.tmw-slot-machine {
-  color: var(--tmw-accent);
-  min-height: 250px;
-  padding: 24px;
-  border-radius: 20px;
-  background: var(--tmw-panel-bg);
-  box-shadow: var(--tmw-shadow);
-  display: block;
-  pointer-events: none !important;
-  transform: translateZ(0);
-}
-
-.tmw-slot-machine * {
-  color: inherit;
-  font-family: inherit;
-  box-sizing: border-box;
-}
-
-.slot-headline,
-.slot-title,
-.slot-heading {
-  color: var(--tmw-accent);
-  text-align: center;
-  margin: 0 0 16px;
-}
-
-.slot-body {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 24px;
-  align-items: center;
-  position: relative;
-  pointer-events: none !important;
-}
-
-.slot-left,
-.slot-center,
-.slot-right {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  text-align: center;
-}
-
-/* =====================================================================
-   Buttons & Controls
-   ===================================================================== */
-
-.slot-btn,
-.tmw-claim-bonus,
-.sound-toggle {
-  pointer-events: auto !important;
-}
-
-.slot-btn,
-.tmw-claim-bonus {
-  min-width: 200px;
-  min-height: 52px;
-  padding: 12px 20px;
-  border-radius: 999px;
-  border: none;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  box-shadow: var(--tmw-shadow);
-  transition: transform 0.2s ease, filter 0.2s ease;
-  will-change: transform;
-}
-
-.slot-btn {
-  background: linear-gradient(180deg, var(--tmw-spin-orange) 0%, var(--tmw-spin-dark) 100%);
-}
-
-.tmw-claim-bonus {
-  background: linear-gradient(180deg, var(--tmw-claim-red) 0%, var(--tmw-claim-dark) 100%);
-  animation: heartbeat 1.8s ease-in-out infinite;
-}
-
-.slot-btn:hover,
-.tmw-claim-bonus:hover {
-  filter: brightness(0.98);
-  transform: translateY(-1px);
-}
-
-.slot-btn:active,
-.tmw-claim-bonus:active {
-  filter: brightness(0.92);
-  transform: translateY(0);
-}
-
-.sound-toggle {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: var(--tmw-border);
-  background: var(--tmw-chip-bg);
-  display: grid;
-  place-items: center;
-  box-shadow: var(--tmw-shadow);
-  transition: transform 0.2s ease, filter 0.2s ease;
-}
-
-.sound-toggle:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-}
-
-/* =====================================================================
-   Reels & Center Column
-   ===================================================================== */
-
-.slot-center {
-  min-width: 320px;
-}
-
-.slot-reels {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  align-items: center;
-  padding: 16px;
-  border-radius: 16px;
-  border: var(--tmw-border);
-  background: var(--tmw-soft-bg);
-  will-change: transform;
-  transform: translateZ(0);
-}
-
-.reel {
-  width: 90px;
-  height: 90px;
-  border-radius: 12px;
-  background: var(--tmw-chip-bg);
-  display: grid;
-  place-items: center;
-  font-size: 32px;
-  will-change: transform;
-  transform: translateZ(0);
-}
-
-/* =====================================================================
-   Right Column (Result / Win)
-   ===================================================================== */
-
-.slot-right {
-  gap: 16px;
-}
-
-.slot-result,
-.tmw-win-message,
-.tmw-prize-text {
-  color: var(--tmw-accent);
-  margin: 0;
-}
-
-.slot-result.win-text {
-  animation: pulseWin 1.5s ease-in-out infinite;
-}
-
-/* =====================================================================
-   Surprise Image
-   ===================================================================== */
-
-.tmw-slot-placeholder {
-  min-height: 120px;
-  display: grid;
-  place-items: center;
-}
-
-.tmw-surprise-img {
-  max-width: 100%;
-  height: auto;
-  animation: popIn 0.6s ease-out;
-  transform: translateZ(0);
-  will-change: transform, opacity;
-}
-
-/* =====================================================================
-   Animations
-   ===================================================================== */
-
-@keyframes heartbeat {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-@keyframes pulseWin {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.04);
-    opacity: 0.7;
-  }
-}
-
-@keyframes popIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* =====================================================================
-   Accessibility
-   ===================================================================== */
-
-@media (prefers-reduced-motion: reduce) {
-  .tmw-slot-machine *,
-  .tmw-claim-bonus,
-  .slot-result.win-text,
-  .tmw-surprise-img {
-    animation: none;
-    transition: none;
-  }
-}
-
-/* =====================================================================
-   Responsive (<= 991px)
-   ===================================================================== */
-
-@media (max-width: 991px) {
-  .tmw-slot-machine {
-    min-height: 350px;
-    padding: 20px;
-  }
-
-  .slot-body {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .slot-center {
-    min-width: auto;
-  }
-
-  .slot-reels {
-    gap: 10px;
-  }
-
-  .reel {
-    width: 80px;
-    height: 80px;
-    font-size: 28px;
-  }
+:root { --tmw-spin-orange: #ff7a00; --tmw-claim-red: #e53935; --tmw-accent: #ffffff; }
+.tmw-slot-machine { color: var(--tmw-accent-color, var(--tmw-accent)); padding: 20px; border-radius: 20px; background: rgba(0, 0, 0, 0.35); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+.tmw-slot-machine * { box-sizing: border-box; font-family: inherit; color: inherit; }
+.slot-headline, .slot-title, .slot-heading { text-align: center; margin: 0 0 16px; }
+.slot-body { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.slot-left, .slot-center, .slot-right { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.slot-btn, .tmw-claim-bonus { min-width: 200px; min-height: 52px; padding: 12px 20px; border-radius: 999px; border: none; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); transition: transform 0.2s ease, filter 0.2s ease; }
+.slot-btn { background: linear-gradient(180deg, var(--tmw-spin-orange) 0%, #b45600 100%); }
+.tmw-claim-bonus { background: linear-gradient(180deg, var(--tmw-claim-red) 0%, #991f1c 100%); animation: heartbeat 1.8s ease-in-out infinite; }
+.slot-btn:hover, .tmw-claim-bonus:hover { filter: brightness(0.98); transform: translateY(-1px); }
+.slot-btn:active, .tmw-claim-bonus:active { filter: brightness(0.92); transform: translateY(0); }
+.sound-toggle { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.08); display: grid; place-items: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); transition: transform 0.2s ease, filter 0.2s ease; }
+.sound-toggle:hover { filter: brightness(1.05); transform: translateY(-1px); }
+.slot-reels { display: flex; gap: 10px; justify-content: center; align-items: center; padding: 16px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.05); }
+.reel { width: 80px; height: 80px; border-radius: 12px; background: rgba(255, 255, 255, 0.08); display: grid; place-items: center; }
+.slot-reels .reel:nth-child(1) { order: 0; }
+.slot-reels .reel:nth-child(2) { order: 1; }
+.slot-reels .reel:nth-child(3) { order: 2; }
+.reel picture, .reel img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.slot-result, .tmw-win-message, .tmw-prize-text { margin: 0; }
+.slot-result.win-text { animation: pulseWin 1.5s ease-in-out infinite; }
+.tmw-slot-placeholder { min-height: 120px; display: grid; place-items: center; }
+.tmw-surprise-img { display: block; width: 120px; height: auto; animation: popIn 0.6s ease-out; }
+.tmw-surprise-img img { width: 100%; height: auto; }
+@keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes pulseWin { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.04); opacity: 0.7; } }
+@keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+@media (min-width: 992px) {
+  .tmw-slot-machine { min-height: 250px; padding: 24px; }
+  .slot-body { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: center; }
+  .slot-center { min-width: 320px; }
+  .slot-reels { gap: 12px; }
+  .reel { width: 90px; height: 90px; }
 }
