@@ -86,7 +86,7 @@
           claimBtn.className = 'tmw-claim-bonus';
           claimBtn.href = claimHref;
           claimBtn.target = '_blank';
-          claimBtn.rel = 'nofollow noopener';
+          claimBtn.rel = 'nofollow noopener noreferrer';
           claimBtn.textContent = 'Claim Your Bonus';
           const slotRight = container.querySelector('.slot-right');
           if (slotRight) {
@@ -161,7 +161,7 @@
    */
   function init() {
     window.addEventListener('pagehide', () => {
-      if (spinInterval != null) {
+      if (spinInterval) {
         clearInterval(spinInterval);
       }
       spinInterval = null;
