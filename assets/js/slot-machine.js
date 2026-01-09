@@ -13,12 +13,16 @@
   let placeholder;
   let soundEnabled = false;
   let hasSpun = false;
+  let spinInterval;
   const spinSound = new Audio(`${assetsUrl}/sounds/spin.mp3`);
   const winSound = new Audio(`${assetsUrl}/sounds/win.mp3`);
   spinSound.volume = 0.6;
   winSound.volume = 0.9;
   const getIconUrl = icon => `${assetsUrl}/img/${icon}`;
 
+  /**
+   * Randomize the reel icons for the spin animation.
+   */
   function setRandomIcons() {
     const shuffled = [...icons].sort(() => Math.random() - 0.5);
     reels.forEach((reel, index) => {
@@ -26,18 +30,27 @@
     });
   }
 
+  /**
+   * Show the surprise placeholder image before the first spin.
+   */
   function showSurprise() {
     if (!hasSpun && placeholder) {
       placeholder.innerHTML = `<img src="${assetsUrl}/img/surprice-trans.png" alt="Surprise" class="tmw-surprise-img">`;
     }
   }
 
+  /**
+   * Toggle sound playback and update the UI state.
+   */
   function toggleSound() {
     soundEnabled = !soundEnabled;
     soundToggle.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Enable Sound';
     soundToggle.classList.toggle('active', soundEnabled);
   }
 
+  /**
+   * Render win/loss results and optional claim CTA.
+   */
   function showResult() {
     const isWin = Math.random() * 100 < winRate;
     const winIcon = icons[Math.floor(Math.random() * icons.length)];
@@ -47,6 +60,7 @@
         reel.innerHTML = `<img src="${getIconUrl(winIcon)}" alt="">`;
       });
 
+      // Offers are index-aligned with the icons array in configuration.
       const offerIndex = icons.indexOf(winIcon);
       const offer = offers[offerIndex];
 
@@ -88,6 +102,9 @@
     btn.textContent = 'Spin Again';
   }
 
+  /**
+   * Animate the reels, then resolve the result state.
+   */
   function spin() {
     if (!hasSpun && placeholder) {
       placeholder.innerHTML = '';
@@ -104,11 +121,15 @@
 
     let elapsed = 0;
     const duration = 1400;
-    const interval = setInterval(() => {
+    if (spinInterval) {
+      clearInterval(spinInterval);
+    }
+    spinInterval = setInterval(() => {
       setRandomIcons();
       elapsed += 110;
       if (elapsed >= duration) {
-        clearInterval(interval);
+        clearInterval(spinInterval);
+        spinInterval = null;
         showResult();
       }
     }, 110);
@@ -119,6 +140,9 @@
     }
   }
 
+  /**
+   * Initialize DOM references and bind listeners.
+   */
   function init() {
     container = document.querySelector('.tmw-slot-machine');
     if (!container) {
