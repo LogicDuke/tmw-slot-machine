@@ -13,7 +13,8 @@
   let placeholder;
   let soundEnabled = false;
   let hasSpun = false;
-  let spinInterval;
+  /** @type {number | null} */
+  let spinInterval = null;
   const spinSound = new Audio(`${assetsUrl}/sounds/spin.mp3`);
   const winSound = new Audio(`${assetsUrl}/sounds/win.mp3`);
   spinSound.volume = 0.6;
@@ -68,14 +69,29 @@
         result.textContent = `🎉 ${offer.title}!`;
         result.className = 'tmw-result slot-result win-text show';
 
+        let claimHref = '';
         if (offer.url) {
+          try {
+            const url = new URL(offer.url, window.location.href);
+            if (url.protocol === 'http:' || url.protocol === 'https:') {
+              claimHref = url.href;
+            }
+          } catch {
+            claimHref = '';
+          }
+        }
+
+        if (claimHref) {
           const claimBtn = document.createElement('a');
           claimBtn.className = 'tmw-claim-bonus';
-          claimBtn.href = offer.url;
+          claimBtn.href = claimHref;
           claimBtn.target = '_blank';
           claimBtn.rel = 'nofollow noopener';
           claimBtn.textContent = 'Claim Your Bonus';
-          container.querySelector('.slot-right').prepend(claimBtn);
+          const slotRight = container.querySelector('.slot-right');
+          if (slotRight) {
+            slotRight.prepend(claimBtn);
+          }
         }
       } else {
         result.textContent = '🎉 You Win!';
@@ -144,6 +160,13 @@
    * Initialize DOM references and bind listeners.
    */
   function init() {
+    window.addEventListener('pagehide', () => {
+      if (spinInterval != null) {
+        clearInterval(spinInterval);
+      }
+      spinInterval = null;
+    });
+
     container = document.querySelector('.tmw-slot-machine');
     if (!container) {
       return;
