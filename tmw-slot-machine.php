@@ -37,6 +37,12 @@ function tmw_slot_machine_asset_version($relative_path) {
     return file_exists($path) ? filemtime($path) : false;
 }
 
+function tmw_slot_machine_is_debug() {
+    return (defined('TMW_SLOT_MACHINE_DEBUG') && TMW_SLOT_MACHINE_DEBUG)
+        || (defined('TMW_DEBUG') && TMW_DEBUG)
+        || (defined('WP_DEBUG') && WP_DEBUG);
+}
+
 add_action('wp_enqueue_scripts', function () {
     if (is_admin()) {
         return;
@@ -47,6 +53,7 @@ add_action('wp_enqueue_scripts', function () {
     }
 
     $base = plugins_url('assets/', __FILE__);
+    $debug = tmw_slot_machine_is_debug();
 
     // CSS (canonical)
     wp_register_style(
@@ -66,6 +73,25 @@ add_action('wp_enqueue_scripts', function () {
         true
     );
     wp_enqueue_script('tmw-slot-js');
+
+    if ($debug) {
+        wp_register_style(
+            'tmw-slot-audit-css',
+            $base . 'css/tmw-slot-machine-audit.css',
+            [],
+            tmw_slot_machine_asset_version('assets/css/tmw-slot-machine-audit.css') ?: '1.0.0'
+        );
+        wp_enqueue_style('tmw-slot-audit-css');
+
+        wp_register_script(
+            'tmw-slot-audit-js',
+            $base . 'js/tmw-slot-machine-audit.js',
+            [],
+            tmw_slot_machine_asset_version('assets/js/tmw-slot-machine-audit.js') ?: '1.0.0',
+            true
+        );
+        wp_enqueue_script('tmw-slot-audit-js');
+    }
 
     $settings        = get_option('tmw_slot_machine_settings', []);
     $win_probability = isset($settings['win_rate']) ? (int) $settings['win_rate'] : 50;
@@ -93,9 +119,77 @@ add_action('wp_enqueue_scripts', function () {
 // Register shortcode
 add_shortcode('tmw_slot_machine', 'tmw_slot_machine_display');
 function tmw_slot_machine_display() {
+    $debug = tmw_slot_machine_is_debug();
+    $post_id = get_the_ID();
+    if (!$post_id && isset($GLOBALS['post']->ID)) {
+        $post_id = (int) $GLOBALS['post']->ID;
+    }
+    $tmw_slot_machine_audit_token = $debug && function_exists('wp_generate_uuid4')
+        ? wp_generate_uuid4()
+        : ($debug ? uniqid('tmw-slot-', true) : '');
+    $tmw_slot_machine_audit_post_id = $post_id ? (string) $post_id : '';
+
     ob_start();
     include TMW_SLOT_MACHINE_PATH . 'templates/slot-machine-display.php';
-    return ob_get_clean();
+    $out = ob_get_clean();
+
+    if ($debug) {
+        $in_the_content = false;
+        $current_filter = function_exists('current_filter') ? current_filter() : '';
+        $filters = [];
+        if (isset($GLOBALS['wp_current_filter'])) {
+            $filters = (array) $GLOBALS['wp_current_filter'];
+            $in_the_content = in_array('the_content', $filters, true);
+        }
+        $filters_joined = implode(' > ', array_map('strval', $filters));
+        $queried_object = get_queried_object();
+        $queried_summary = '';
+        if (is_object($queried_object)) {
+            $queried_summary = get_class($queried_object);
+            if (isset($queried_object->ID)) {
+                $queried_summary .= '#'.$queried_object->ID;
+            } elseif (isset($queried_object->term_id)) {
+                $queried_summary .= '#'.$queried_object->term_id;
+            }
+        } elseif ($queried_object !== null) {
+            $queried_summary = (string) $queried_object;
+        }
+        if ($queried_summary === '') {
+            $queried_summary = 'none';
+        }
+
+        $backtrace = function_exists('wp_debug_backtrace_summary')
+            ? wp_debug_backtrace_summary(null, 0, false)
+            : wp_json_encode(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 8));
+
+        $out_length = strlen($out);
+        $out_hash = substr(md5($out), 0, 8);
+
+        error_log(
+            sprintf(
+                '[TMW-SLOT-MACHINE-AUDIT] shortcode_run post_id=%s singular_model=%s queried=%s in_the_content=%s current_filter=%s filters=%s bt=%s out_len=%d out_hash=%s',
+                $tmw_slot_machine_audit_post_id !== '' ? $tmw_slot_machine_audit_post_id : 'unknown',
+                is_singular('model') ? 'true' : 'false',
+                $queried_summary,
+                $in_the_content ? 'true' : 'false',
+                $current_filter !== '' ? $current_filter : 'none',
+                $filters_joined !== '' ? $filters_joined : 'none',
+                $backtrace,
+                $out_length,
+                $out_hash
+            )
+        );
+
+        $out = sprintf(
+            "<!-- TMW_SLOT_MACHINE_AUDIT START token=%s post_id=%s -->\n%s\n<!-- TMW_SLOT_MACHINE_AUDIT END token=%s -->",
+            esc_html($tmw_slot_machine_audit_token),
+            esc_html($tmw_slot_machine_audit_post_id),
+            $out,
+            esc_html($tmw_slot_machine_audit_token)
+        );
+    }
+
+    return $out;
 }
 
 // Admin menu

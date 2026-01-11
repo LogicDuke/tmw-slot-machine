@@ -10,8 +10,17 @@ $trigger_headline = get_option('tmw_slot_trigger_headline', $headline_default);
 if (!is_string($trigger_headline) || $trigger_headline === '') {
     $trigger_headline = $headline_default;
 }
+$tmw_slot_machine_debug = function_exists('tmw_slot_machine_is_debug') && tmw_slot_machine_is_debug();
+$tmw_slot_machine_audit_attrs = '';
+if ($tmw_slot_machine_debug && isset($tmw_slot_machine_audit_token)) {
+    $tmw_slot_machine_audit_attrs = sprintf(
+        ' data-tmw-slot-audit-token="%s" data-tmw-slot-audit-post="%s"',
+        esc_attr($tmw_slot_machine_audit_token),
+        esc_attr($tmw_slot_machine_audit_post_id ?? '')
+    );
+}
 ?>
-<div class="tmw-slot-machine" data-win-rate="<?php echo esc_attr($win_rate); ?>" data-sound-default="<?php echo esc_attr($sound_default); ?>" data-offers="<?php echo $offers_json; ?>" style="--tmw-accent-color: <?php echo esc_attr($accent_color); ?>;">
+<div class="tmw-slot-machine" data-win-rate="<?php echo esc_attr($win_rate); ?>" data-sound-default="<?php echo esc_attr($sound_default); ?>" data-offers="<?php echo $offers_json; ?>"<?php echo $tmw_slot_machine_audit_attrs; ?> style="--tmw-accent-color: <?php echo esc_attr($accent_color); ?>;">
   <div class="slot-headline"><?php echo esc_html($trigger_headline); ?></div>
   <div class="slot-body slot-container">
     <div class="slot-left">

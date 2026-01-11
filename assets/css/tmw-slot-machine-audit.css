@@ -1,0 +1,4 @@
+.tmw-slot-machine[data-tmw-slot-audit-token] {
+  outline: 1px dashed #ff003c;
+  outline-offset: 0;
+}
