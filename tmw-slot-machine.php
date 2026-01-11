@@ -161,6 +161,10 @@ function tmw_slot_machine_display() {
         $backtrace = function_exists('wp_debug_backtrace_summary')
             ? wp_debug_backtrace_summary(null, 0, false)
             : wp_json_encode(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 8));
+        if (is_array($backtrace)) {
+            $backtrace = implode(' | ', array_map('strval', $backtrace));
+        }
+        $backtrace = is_string($backtrace) && $backtrace !== '' ? $backtrace : 'none';
 
         $out_length = strlen($out);
         $out_hash = substr(md5($out), 0, 8);
