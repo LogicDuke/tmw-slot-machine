@@ -2,7 +2,7 @@
 /*
 Plugin Name: TMW Slot Machine
 Description: Interactive slot bonus banner for Top-Models.Webcam
-Version: 1.4.9
+Version: 2.0.0
 Author: The Milisofia Ltd
 */
 
@@ -12,13 +12,12 @@ if (!defined('ABSPATH')) {
 
 define('TMW_SLOT_MACHINE_PATH', plugin_dir_path(__FILE__));
 define('TMW_SLOT_MACHINE_URL', plugin_dir_url(__FILE__));
-define('TMW_SLOT_MACHINE_VERSION', '1.4.9');
+define('TMW_SLOT_MACHINE_VERSION', '2.0.0');
 
 if (!defined('TMW_SLOT_MACHINE_DEFAULT_HEADLINE')) {
     define('TMW_SLOT_MACHINE_DEFAULT_HEADLINE', 'Spin Now & Reveal Your Secret Bonus 👀');
 }
 
-// Verify that all neon icon files exist
 add_action('init', function() {
     $icons = ['bonus.png', 'peeks.png', 'deal.png', 'roses.png', 'value.png'];
     $missing = [];
@@ -51,10 +50,11 @@ add_action('wp_enqueue_scripts', function () {
 
     $base = plugins_url('assets/', __FILE__);
     $debug = tmw_slot_machine_is_debug();
-    $css_ver = tmw_slot_machine_asset_version('assets/css/slot-machine.css') ?: TMW_SLOT_MACHINE_VERSION;
-    $js_ver = tmw_slot_machine_asset_version('assets/js/slot-machine.js') ?: TMW_SLOT_MACHINE_VERSION;
+    
+    $cache_bust = TMW_SLOT_MACHINE_VERSION . '.' . time();
+    $css_ver = tmw_slot_machine_asset_version('assets/css/slot-machine.css') ?: $cache_bust;
+    $js_ver = tmw_slot_machine_asset_version('assets/js/slot-machine.js') ?: $cache_bust;
 
-    // CSS (canonical)
     wp_register_style(
         'tmw-slot-css',
         $base . 'css/slot-machine.css',
@@ -62,7 +62,6 @@ add_action('wp_enqueue_scripts', function () {
         $css_ver
     );
 
-    // JS (footer, after DOM, avoids early race with AO)
     wp_register_script(
         'tmw-slot-js',
         $base . 'js/slot-machine.js',
@@ -118,12 +117,11 @@ function tmw_slot_machine_enqueue_assets() {
         $offers = $settings['offers'];
     }
 
-    // Filter to only include enabled offers
     if (is_array($offers)) {
         $offers = array_filter($offers, function($offer) {
             return !isset($offer['enabled']) || $offer['enabled'] === true;
         });
-        $offers = array_values($offers); // Re-index array
+        $offers = array_values($offers);
     }
 
     $headline = get_option('tmw_slot_trigger_headline', TMW_SLOT_MACHINE_DEFAULT_HEADLINE);
@@ -142,7 +140,6 @@ function tmw_slot_machine_enqueue_assets() {
     $localized = true;
 }
 
-// Register shortcode
 add_shortcode('tmw_slot_machine', 'tmw_slot_machine_display');
 function tmw_slot_machine_display() {
     tmw_slot_machine_enqueue_assets();
@@ -223,7 +220,6 @@ function tmw_slot_machine_display() {
     return $out;
 }
 
-// Admin menu
 add_action('admin_menu', function() {
     add_options_page('TMW Slot Machine', 'TMW Slot Machine', 'manage_options', 'tmw-slot-machine', 'tmw_slot_machine_admin_page');
 });
@@ -244,7 +240,6 @@ function tmw_slot_machine_admin_page() {
     include TMW_SLOT_MACHINE_PATH . 'admin/settings-page.php';
 }
 
-// Activation hook
 register_activation_hook(__FILE__, function() {
     $default_settings = [
         'win_rate'     => 20,
