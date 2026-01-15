@@ -1,7 +1,7 @@
 <?php
 $settings = get_option('tmw_slot_machine_settings', []);
 $win_rate = $settings['win_rate'] ?? 20;
-$sound_default = $settings['sound'] ?? 'off';
+$sound_default = $settings['sound'] ?? 'on';
 $accent_color = $settings['accent_color'] ?? '#ff003c';
 $offers = $settings['offers'] ?? [];
 $offers_json = esc_attr(wp_json_encode($offers));
@@ -26,7 +26,7 @@ if ($tmw_slot_machine_debug && isset($tmw_slot_machine_audit_token)) {
     <div class="slot-left">
       <button id="tmw-slot-btn" class="slot-btn spin" type="button">Spin Now</button>
       <div class="slot-sound">
-        <button id="soundToggle" class="sound-toggle" aria-label="Sound On">🔊 Sound On</button>
+        <button id="soundToggle" class="sound-toggle" aria-label="Sound Off">🔇 Sound Off</button>
       </div>
     </div>
 
@@ -39,8 +39,15 @@ if ($tmw_slot_machine_debug && isset($tmw_slot_machine_audit_token)) {
     </div>
 
     <div class="slot-right">
-      <div class="tmw-slot-placeholder"></div>
+      <div class="tmw-slot-placeholder">
+        <span class="teaser-text">Your Bonus Awaits</span>
+        <span class="teaser-sub">Spin to reveal</span>
+      </div>
       <div class="tmw-result slot-result"></div>
+    </div>
+    
+    <div class="mobile-sound">
+      <button class="sound-toggle" aria-label="Sound Off">🔇 Sound Off</button>
     </div>
   </div>
 </div>

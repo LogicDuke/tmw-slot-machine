@@ -29,19 +29,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer('tmw_slot_machi
 
     $trigger_headline = $headline_input;
 
-    $titles = isset($_POST['offers_title']) ? (array) $_POST['offers_title'] : [];
-    $urls   = isset($_POST['offers_url']) ? (array) $_POST['offers_url'] : [];
+    $titles  = isset($_POST['offers_title']) ? (array) $_POST['offers_title'] : [];
+    $urls    = isset($_POST['offers_url']) ? (array) $_POST['offers_url'] : [];
+    $enabled = isset($_POST['offers_enabled']) ? (array) $_POST['offers_enabled'] : [];
 
     $offers = [];
     $count  = max(count($titles), count($urls));
     for ($i = 0; $i < $count; $i++) {
         $title = sanitize_text_field($titles[$i] ?? '');
         $url   = esc_url_raw($urls[$i] ?? '');
+        $is_enabled = in_array((string)$i, $enabled, true);
 
         if ($title && $url) {
             $offers[] = [
-                'title' => $title,
-                'url'   => $url,
+                'title'   => $title,
+                'url'     => $url,
+                'enabled' => $is_enabled,
             ];
         }
     }
@@ -84,16 +87,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer('tmw_slot_machi
                 <th scope="row"><label for="tmw-trigger-headline">Trigger Headline</label></th>
                 <td>
                     <input id="tmw-trigger-headline" type="text" name="tmw_slot_trigger_headline" value="<?php echo esc_attr($trigger_headline); ?>" style="width:100%;max-width:600px;">
-                    <p class="description">This text appears above the slot reels (e.g. “Spin Now &amp; Reveal Your Secret Bonus 👀”).</p>
+                    <p class="description">This text appears above the slot reels (e.g. "Spin Now &amp; Reveal Your Secret Bonus 👀").</p>
                 </td>
             </tr>
         </table>
 
         <h2>Featured Offers</h2>
-        <p>Add up to five LiveJasmin offers to rotate through in the slot machine results.</p>
+        <p>Add up to five LiveJasmin offers to rotate through in the slot machine results. Use the checkbox to enable or disable each bonus individually.</p>
         <table class="widefat fixed striped">
             <thead>
                 <tr>
+                    <th scope="col" style="width:60px;">Active</th>
                     <th scope="col">Offer Title</th>
                     <th scope="col">Destination URL</th>
                 </tr>
@@ -103,10 +107,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer('tmw_slot_machi
                 $offers = $settings['offers'];
                 $max_offers = max(5, count($offers));
                 for ($i = 0; $i < $max_offers; $i++) {
-                    $offer_title = $offers[$i]['title'] ?? '';
-                    $offer_url   = $offers[$i]['url'] ?? '';
+                    $offer_title   = $offers[$i]['title'] ?? '';
+                    $offer_url     = $offers[$i]['url'] ?? '';
+                    $offer_enabled = isset($offers[$i]['enabled']) ? $offers[$i]['enabled'] : true;
                     ?>
                     <tr>
+                        <td style="text-align:center;">
+                            <input type="checkbox" name="offers_enabled[]" value="<?php echo $i; ?>" <?php checked($offer_enabled || ($offer_title === '' && $offer_url === '')); ?>>
+                        </td>
                         <td>
                             <input type="text" name="offers_title[]" value="<?php echo esc_attr($offer_title); ?>" placeholder="70% OFF Welcome Bonus" class="regular-text">
                         </td>
@@ -119,6 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer('tmw_slot_machi
                 ?>
             </tbody>
         </table>
+        <p class="description" style="margin-top:10px;"><strong>Note:</strong> Only bonuses with the "Active" checkbox enabled will appear in the slot machine rotation.</p>
 
         <p class="submit">
             <input type="submit" class="button-primary" value="Save Settings">

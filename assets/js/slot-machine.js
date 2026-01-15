@@ -1,24 +1,27 @@
 (function () {
   'use strict';
+  
   const config = window.tmwSlot || {};
   const assetsUrl = config.assetsUrl || '/wp-content/plugins/tmw-slot-machine/assets';
   const winRate = Number.isFinite(config.winRate) ? config.winRate : 50;
   const offers = Array.isArray(config.offers) ? config.offers : [];
   const icons = ['bonus.png', 'peeks.png', 'deal.png', 'roses.png', 'value.png'];
+  
   let container;
   let btn;
   let reels;
   let result;
   let soundToggle;
   let placeholder;
-  let soundEnabled = false;
+  let soundEnabled = false; // Sound OFF by default
   let hasSpun = false;
-  /** @type {number | null} */
   let spinInterval = null;
+  
   const spinSound = new Audio(`${assetsUrl}/sounds/spin.mp3`);
   const winSound = new Audio(`${assetsUrl}/sounds/win.mp3`);
   spinSound.volume = 0.6;
   winSound.volume = 0.9;
+  
   const getIconUrl = icon => `${assetsUrl}/img/${icon}`;
 
   /**
@@ -41,32 +44,86 @@
   }
 
   /**
+   * Update sound toggle button UI
+   */
+  function updateSoundUI() {
+    if (soundToggle) {
+      soundToggle.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
+      soundToggle.classList.toggle('active', soundEnabled);
+    }
+  }
+
+  /**
    * Toggle sound playback and update the UI state.
    */
   function toggleSound() {
     soundEnabled = !soundEnabled;
-    soundToggle.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Enable Sound';
-    soundToggle.classList.toggle('active', soundEnabled);
+    updateSoundUI();
+  }
+
+  /**
+   * Try to enable sound with user interaction
+   */
+  function tryEnableSound() {
+    // Play and immediately pause to unlock audio context
+    spinSound.play().then(() => {
+      spinSound.pause();
+      spinSound.currentTime = 0;
+    }).catch(() => {});
+  }
+
+  /**
+   * Add spinning animation class to reels
+   */
+  function setReelsSpinning(isSpinning) {
+    reels.forEach(reel => {
+      if (isSpinning) {
+        reel.classList.add('spinning');
+      } else {
+        reel.classList.remove('spinning');
+      }
+    });
+  }
+
+  /**
+   * Add win animation class to reels
+   */
+  function setReelsWin(isWin) {
+    reels.forEach(reel => {
+      if (isWin) {
+        reel.classList.add('win');
+      } else {
+        reel.classList.remove('win');
+      }
+    });
   }
 
   /**
    * Render win/loss results and optional claim CTA.
    */
   function showResult() {
+    setReelsSpinning(false);
+    
     const isWin = Math.random() * 100 < winRate;
     const winIcon = icons[Math.floor(Math.random() * icons.length)];
 
     if (isWin) {
+      // Add win celebration effect to container
+      container.classList.add('winning');
+      setTimeout(() => container.classList.remove('winning'), 800);
+      
       reels.forEach(reel => {
         reel.innerHTML = `<img src="${getIconUrl(winIcon)}" alt="">`;
       });
+      
+      setReelsWin(true);
 
       // Offers are index-aligned with the icons array in configuration.
       const offerIndex = icons.indexOf(winIcon);
       const offer = offers[offerIndex];
 
       if (offer && offer.title) {
-        result.textContent = `🎉 ${offer.title}!`;
+        result.textContent = offer.title;
         result.className = 'tmw-result slot-result win-text show';
 
         let claimHref = '';
@@ -94,7 +151,7 @@
           }
         }
       } else {
-        result.textContent = '🎉 You Win!';
+        result.textContent = 'You Win!';
         result.className = 'tmw-result slot-result win-text show';
       }
 
@@ -103,6 +160,8 @@
         winSound.play().catch(() => {});
       }
     } else {
+      setReelsWin(false);
+      
       const mixed = [...icons].sort(() => Math.random() - 0.5).slice(0, 3);
       if (mixed[0] === mixed[1] && mixed[1] === mixed[2]) {
         mixed[2] = icons.find(icon => icon !== mixed[0]) || mixed[2];
@@ -111,7 +170,7 @@
         reel.innerHTML = `<img src="${getIconUrl(mixed[index])}" alt="">`;
       });
       result.textContent = 'Try Again!';
-      result.className = 'tmw-result slot-result show';
+      result.className = 'tmw-result slot-result lose-text show';
     }
 
     btn.disabled = false;
@@ -123,17 +182,20 @@
    */
   function spin() {
     if (!hasSpun && placeholder) {
-      placeholder.innerHTML = '';
+      placeholder.style.display = 'none';
     }
     hasSpun = true;
     btn.disabled = true;
     result.textContent = '';
     result.className = 'tmw-result slot-result';
+    setReelsWin(false);
 
     const oldClaim = container.querySelector('.tmw-claim-bonus');
     if (oldClaim) {
       oldClaim.remove();
     }
+
+    setReelsSpinning(true);
 
     let elapsed = 0;
     const duration = 1400;
@@ -178,15 +240,45 @@
     soundToggle = document.getElementById('soundToggle');
     placeholder = container.querySelector('.tmw-slot-placeholder');
 
-    if (!btn || reels.length === 0 || !result || !soundToggle) {
+    // Get all sound toggles (desktop and mobile)
+    const allSoundToggles = container.querySelectorAll('.sound-toggle');
+
+    if (!btn || reels.length === 0 || !result) {
       return;
     }
+
+    // Initialize UI state for sound
+    updateSoundUI();
+    
+    // Update all sound toggles UI
+    allSoundToggles.forEach(toggle => {
+      toggle.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
+      toggle.classList.toggle('active', soundEnabled);
+    });
 
     showSurprise();
     setRandomIcons();
 
-    btn.addEventListener('click', spin);
-    soundToggle.addEventListener('click', toggleSound);
+    btn.addEventListener('click', () => {
+      tryEnableSound();
+      spin();
+    });
+    
+    // Bind click to all sound toggles
+    allSoundToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        toggleSound();
+        // Update all toggles
+        allSoundToggles.forEach(t => {
+          t.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
+          t.classList.toggle('active', soundEnabled);
+        });
+      });
+    });
+
+    // Try to unlock audio on first user interaction with the page
+    document.addEventListener('click', tryEnableSound, { once: true });
+    document.addEventListener('touchstart', tryEnableSound, { once: true });
   }
 
   if (document.readyState === 'loading') {

@@ -102,6 +102,14 @@ add_action('wp_enqueue_scripts', function () {
         $offers = $settings['offers'];
     }
 
+    // Filter to only include enabled offers
+    if (is_array($offers)) {
+        $offers = array_filter($offers, function($offer) {
+            return !isset($offer['enabled']) || $offer['enabled'] === true;
+        });
+        $offers = array_values($offers); // Re-index array
+    }
+
     $headline = get_option('tmw_slot_trigger_headline', TMW_SLOT_MACHINE_DEFAULT_HEADLINE);
     if (!is_string($headline) || $headline === '') {
         $headline = TMW_SLOT_MACHINE_DEFAULT_HEADLINE;
@@ -224,11 +232,11 @@ register_activation_hook(__FILE__, function() {
         'sound'        => 'off',
         'accent_color' => '#ff003c',
         'offers'       => [
-            ['title' => '70% OFF Welcome Bonus', 'url' => 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u'],
-            ['title' => '10 Free Peeks', 'url' => 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u'],
-            ['title' => 'Hot Deal: Private Shows', 'url' => 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u'],
-            ['title' => '15% OFF Million Roses', 'url' => 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u'],
-            ['title' => 'Best Value – From 0.01 Credits', 'url' => 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u'],
+            ['title' => '70% OFF Welcome Bonus', 'url' => 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u', 'enabled' => true],
+            ['title' => '10 Free Peeks', 'url' => 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u', 'enabled' => true],
+            ['title' => 'Hot Deal: Private Shows', 'url' => 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u', 'enabled' => true],
+            ['title' => '15% OFF Million Roses', 'url' => 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u', 'enabled' => true],
+            ['title' => 'Best Value – From 0.01 Credits', 'url' => 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u', 'enabled' => true],
         ],
     ];
 
