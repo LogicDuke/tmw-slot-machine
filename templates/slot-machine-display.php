@@ -20,13 +20,13 @@ if ($tmw_slot_machine_debug && isset($tmw_slot_machine_audit_token)) {
     );
 }
 ?>
-<div class="tmw-slot-machine" data-win-rate="<?php echo esc_attr($win_rate); ?>" data-sound-default="<?php echo esc_attr($sound_default); ?>" data-offers="<?php echo $offers_json; ?>"<?php echo $tmw_slot_machine_audit_attrs; ?> style="--tmw-accent-color: <?php echo esc_attr($accent_color); ?>;">
+<div class="tmw-slot-machine tmw-slot-machine--lux" data-win-rate="<?php echo esc_attr($win_rate); ?>" data-sound-default="<?php echo esc_attr($sound_default); ?>" data-offers="<?php echo $offers_json; ?>"<?php echo $tmw_slot_machine_audit_attrs; ?> style="--tmw-accent-color: <?php echo esc_attr($accent_color); ?>;">
   <div class="slot-headline"><?php echo esc_html($trigger_headline); ?></div>
-  <div class="slot-body slot-container">
+  <div class="slot-body">
     <div class="slot-left">
-      <button id="tmw-slot-btn" class="slot-btn spin" type="button">Spin Now</button>
+      <button class="slot-btn tmw-slot-btn spin" type="button">Spin Now</button>
       <div class="slot-sound">
-        <button id="soundToggle" class="sound-toggle" aria-label="Sound Off">🔇 Sound Off</button>
+        <button class="sound-toggle tmw-slot-sound-toggle" aria-label="Sound Off">🔇 Sound Off</button>
       </div>
     </div>
 
@@ -47,7 +47,7 @@ if ($tmw_slot_machine_debug && isset($tmw_slot_machine_audit_token)) {
     </div>
     
     <div class="mobile-sound">
-      <button class="sound-toggle" aria-label="Sound Off">🔇 Sound Off</button>
+      <button class="sound-toggle tmw-slot-sound-toggle" aria-label="Sound Off">🔇 Sound Off</button>
     </div>
   </div>
 </div>
