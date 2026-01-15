@@ -13,7 +13,7 @@
   let result;
   let soundToggle;
   let placeholder;
-  let soundEnabled = false; // Sound OFF by default
+  let soundEnabled = false;
   let hasSpun = false;
   let spinInterval = null;
   
@@ -24,9 +24,6 @@
   
   const getIconUrl = icon => `${assetsUrl}/img/${icon}`;
 
-  /**
-   * Randomize the reel icons for the spin animation.
-   */
   function setRandomIcons() {
     const shuffled = [...icons].sort(() => Math.random() - 0.5);
     reels.forEach((reel, index) => {
@@ -34,18 +31,12 @@
     });
   }
 
-  /**
-   * Show the surprise placeholder image before the first spin.
-   */
   function showSurprise() {
     if (!hasSpun && placeholder) {
       placeholder.innerHTML = `<img src="${assetsUrl}/img/surprice-trans.png" alt="Surprise" class="tmw-surprise-img">`;
     }
   }
 
-  /**
-   * Update sound toggle button UI
-   */
   function updateSoundUI() {
     if (soundToggle) {
       soundToggle.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
@@ -53,28 +44,18 @@
     }
   }
 
-  /**
-   * Toggle sound playback and update the UI state.
-   */
   function toggleSound() {
     soundEnabled = !soundEnabled;
     updateSoundUI();
   }
 
-  /**
-   * Try to enable sound with user interaction
-   */
   function tryEnableSound() {
-    // Play and immediately pause to unlock audio context
     spinSound.play().then(() => {
       spinSound.pause();
       spinSound.currentTime = 0;
     }).catch(() => {});
   }
 
-  /**
-   * Add spinning animation class to reels
-   */
   function setReelsSpinning(isSpinning) {
     reels.forEach(reel => {
       if (isSpinning) {
@@ -85,9 +66,6 @@
     });
   }
 
-  /**
-   * Add win animation class to reels
-   */
   function setReelsWin(isWin) {
     reels.forEach(reel => {
       if (isWin) {
@@ -98,9 +76,6 @@
     });
   }
 
-  /**
-   * Render win/loss results and optional claim CTA.
-   */
   function showResult() {
     setReelsSpinning(false);
     
@@ -108,7 +83,6 @@
     const winIcon = icons[Math.floor(Math.random() * icons.length)];
 
     if (isWin) {
-      // Add win celebration effect to container
       container.classList.add('winning');
       setTimeout(() => container.classList.remove('winning'), 800);
       
@@ -118,7 +92,6 @@
       
       setReelsWin(true);
 
-      // Offers are index-aligned with the icons array in configuration.
       const offerIndex = icons.indexOf(winIcon);
       const offer = offers[offerIndex];
 
@@ -177,9 +150,6 @@
     btn.textContent = 'Spin Again';
   }
 
-  /**
-   * Animate the reels, then resolve the result state.
-   */
   function spin() {
     if (!hasSpun && placeholder) {
       placeholder.style.display = 'none';
@@ -218,9 +188,6 @@
     }
   }
 
-  /**
-   * Initialize DOM references and bind listeners.
-   */
   function init() {
     window.addEventListener('pagehide', () => {
       if (spinInterval) {
@@ -240,17 +207,14 @@
     soundToggle = document.getElementById('soundToggle');
     placeholder = container.querySelector('.tmw-slot-placeholder');
 
-    // Get all sound toggles (desktop and mobile)
     const allSoundToggles = container.querySelectorAll('.sound-toggle');
 
     if (!btn || reels.length === 0 || !result) {
       return;
     }
 
-    // Initialize UI state for sound
     updateSoundUI();
     
-    // Update all sound toggles UI
     allSoundToggles.forEach(toggle => {
       toggle.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
       toggle.classList.toggle('active', soundEnabled);
@@ -264,11 +228,9 @@
       spin();
     });
     
-    // Bind click to all sound toggles
     allSoundToggles.forEach(toggle => {
       toggle.addEventListener('click', () => {
         toggleSound();
-        // Update all toggles
         allSoundToggles.forEach(t => {
           t.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
           t.classList.toggle('active', soundEnabled);
@@ -276,7 +238,6 @@
       });
     });
 
-    // Try to unlock audio on first user interaction with the page
     document.addEventListener('click', tryEnableSound, { once: true });
     document.addEventListener('touchstart', tryEnableSound, { once: true });
   }
