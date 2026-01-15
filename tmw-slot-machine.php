@@ -48,10 +48,6 @@ add_action('wp_enqueue_scripts', function () {
         return;
     }
 
-    if (!is_singular('model')) {
-        return;
-    }
-
     $base = plugins_url('assets/', __FILE__);
     $debug = tmw_slot_machine_is_debug();
 
@@ -62,7 +58,6 @@ add_action('wp_enqueue_scripts', function () {
         [],
         '1.1.6g'
     );
-    wp_enqueue_style('tmw-slot-css');
 
     // JS (footer, after DOM, avoids early race with AO)
     wp_register_script(
@@ -72,7 +67,6 @@ add_action('wp_enqueue_scripts', function () {
         '1.1.6g',
         true
     );
-    wp_enqueue_script('tmw-slot-js');
 
     if ($debug) {
         wp_register_style(
@@ -81,7 +75,6 @@ add_action('wp_enqueue_scripts', function () {
             [],
             tmw_slot_machine_asset_version('assets/css/tmw-slot-machine-audit.css') ?: '1.0.0'
         );
-        wp_enqueue_style('tmw-slot-audit-css');
 
         wp_register_script(
             'tmw-slot-audit-js',
@@ -90,7 +83,26 @@ add_action('wp_enqueue_scripts', function () {
             tmw_slot_machine_asset_version('assets/js/tmw-slot-machine-audit.js') ?: '1.0.0',
             true
         );
+    }
+}, 99);
+
+function tmw_slot_machine_enqueue_assets() {
+    static $localized = false;
+
+    if (tmw_slot_machine_is_debug()) {
+        error_log('[TMW-SLOT] enqueue_assets called');
+    }
+
+    wp_enqueue_style('tmw-slot-css');
+    wp_enqueue_script('tmw-slot-js');
+
+    if (tmw_slot_machine_is_debug()) {
+        wp_enqueue_style('tmw-slot-audit-css');
         wp_enqueue_script('tmw-slot-audit-js');
+    }
+
+    if ($localized) {
+        return;
     }
 
     $settings        = get_option('tmw_slot_machine_settings', []);
@@ -122,11 +134,14 @@ add_action('wp_enqueue_scripts', function () {
         'offers'    => is_array($offers) ? array_values($offers) : [],
         'headline'  => wp_strip_all_tags($headline),
     ]);
-}, 99);
+
+    $localized = true;
+}
 
 // Register shortcode
 add_shortcode('tmw_slot_machine', 'tmw_slot_machine_display');
 function tmw_slot_machine_display() {
+    tmw_slot_machine_enqueue_assets();
     $debug = tmw_slot_machine_is_debug();
     $post_id = get_the_ID();
     if (!$post_id && isset($GLOBALS['post']->ID)) {
