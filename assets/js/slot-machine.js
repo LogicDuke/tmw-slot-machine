@@ -11,7 +11,6 @@
   let btn;
   let reels;
   let result;
-  let soundToggle;
   let placeholder;
   let soundEnabled = false;
   let hasSpun = false;
@@ -38,9 +37,10 @@
   }
 
   function updateSoundUI() {
-    if (soundToggle) {
-      soundToggle.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
-      soundToggle.classList.toggle('active', soundEnabled);
+    const toggle = container ? container.querySelector('.tmw-slot-sound-toggle, .sound-toggle') : null;
+    if (toggle) {
+      toggle.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
+      toggle.classList.toggle('active', soundEnabled);
     }
   }
 
@@ -117,7 +117,7 @@
           claimBtn.href = claimHref;
           claimBtn.target = '_blank';
           claimBtn.rel = 'nofollow noopener noreferrer';
-          claimBtn.textContent = 'Claim Your Bonus';
+          claimBtn.textContent = 'Claim Bonus';
           const slotRight = container.querySelector('.slot-right');
           if (slotRight) {
             slotRight.prepend(claimBtn);
@@ -201,13 +201,12 @@
       return;
     }
 
-    btn = document.getElementById('tmw-slot-btn');
+    btn = container.querySelector('.tmw-slot-btn');
     reels = container.querySelectorAll('.reel');
     result = container.querySelector('.tmw-result');
-    soundToggle = document.getElementById('soundToggle');
     placeholder = container.querySelector('.tmw-slot-placeholder');
 
-    const allSoundToggles = container.querySelectorAll('.sound-toggle');
+    const allSoundToggles = container.querySelectorAll('.tmw-slot-sound-toggle, .sound-toggle');
 
     if (!btn || reels.length === 0 || !result) {
       return;

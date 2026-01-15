@@ -2,7 +2,7 @@
 /*
 Plugin Name: TMW Slot Machine
 Description: Interactive slot bonus banner for Top-Models.Webcam
-Version: 1.4.8
+Version: 1.4.9
 Author: The Milisofia Ltd
 */
 
@@ -12,6 +12,7 @@ if (!defined('ABSPATH')) {
 
 define('TMW_SLOT_MACHINE_PATH', plugin_dir_path(__FILE__));
 define('TMW_SLOT_MACHINE_URL', plugin_dir_url(__FILE__));
+define('TMW_SLOT_MACHINE_VERSION', '1.4.9');
 
 if (!defined('TMW_SLOT_MACHINE_DEFAULT_HEADLINE')) {
     define('TMW_SLOT_MACHINE_DEFAULT_HEADLINE', 'Spin Now & Reveal Your Secret Bonus 👀');
@@ -50,13 +51,15 @@ add_action('wp_enqueue_scripts', function () {
 
     $base = plugins_url('assets/', __FILE__);
     $debug = tmw_slot_machine_is_debug();
+    $css_ver = tmw_slot_machine_asset_version('assets/css/slot-machine.css') ?: TMW_SLOT_MACHINE_VERSION;
+    $js_ver = tmw_slot_machine_asset_version('assets/js/slot-machine.js') ?: TMW_SLOT_MACHINE_VERSION;
 
     // CSS (canonical)
     wp_register_style(
         'tmw-slot-css',
         $base . 'css/slot-machine.css',
         [],
-        '1.1.6g'
+        $css_ver
     );
 
     // JS (footer, after DOM, avoids early race with AO)
@@ -64,11 +67,12 @@ add_action('wp_enqueue_scripts', function () {
         'tmw-slot-js',
         $base . 'js/slot-machine.js',
         [],
-        '1.1.6g',
+        $js_ver,
         true
     );
 
     if ($debug) {
+        error_log(sprintf('[TMW-SLOT] enqueue css_ver=%s js_ver=%s', $css_ver, $js_ver));
         wp_register_style(
             'tmw-slot-audit-css',
             $base . 'css/tmw-slot-machine-audit.css',

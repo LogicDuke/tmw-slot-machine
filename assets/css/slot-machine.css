@@ -11,7 +11,7 @@
   --tmw-white: #ffffff;
 }
 
-.tmw-slot-machine {
+.tmw-slot-machine.tmw-slot-machine--lux {
   position: relative;
   height: 130px;
   padding: 0;
@@ -27,7 +27,7 @@
   border: 2px solid rgba(212, 175, 55, 0.5);
 }
 
-.tmw-slot-machine::before {
+.tmw-slot-machine.tmw-slot-machine--lux::before {
   content: '';
   position: absolute;
   top: 0;
@@ -38,7 +38,7 @@
   opacity: 0.6;
 }
 
-.slot-body {
+.tmw-slot-machine.tmw-slot-machine--lux .slot-body {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -62,7 +62,7 @@
   z-index: 10;
 }
 
-.slot-left {
+.tmw-slot-machine.tmw-slot-machine--lux .slot-left {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -167,7 +167,7 @@
 .sound-toggle:hover { color: var(--tmw-gold); }
 .sound-toggle.active { color: var(--tmw-gold); }
 
-.slot-center {
+.tmw-slot-machine.tmw-slot-machine--lux .slot-center {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -178,7 +178,7 @@
   z-index: 5;
 }
 
-.slot-reels {
+.tmw-slot-machine.tmw-slot-machine--lux .slot-reels {
   display: flex;
   gap: 8px;
   padding: 10px 14px;
@@ -188,7 +188,7 @@
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.reel {
+.tmw-slot-machine.tmw-slot-machine--lux .reel {
   width: 54px;
   height: 54px;
   border-radius: 4px;
@@ -229,7 +229,7 @@
   50% { filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.4)) brightness(1.1); }
 }
 
-.slot-right {
+.tmw-slot-machine.tmw-slot-machine--lux .slot-right {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -352,7 +352,7 @@
   box-shadow: 0 6px 20px rgba(212, 175, 55, 0.45);
 }
 
-.tmw-slot-machine.winning::after {
+.tmw-slot-machine.tmw-slot-machine--lux.winning::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -368,20 +368,20 @@
 }
 
 @media (max-width: 650px) {
-  .tmw-slot-machine {
+  .tmw-slot-machine.tmw-slot-machine--lux {
     height: auto;
     min-height: 300px;
     padding: 40px 20px 20px;
   }
   
-  .slot-body {
+  .tmw-slot-machine.tmw-slot-machine--lux .slot-body {
     flex-direction: column;
     align-items: center;
     gap: 12px;
     padding: 0;
   }
   
-  .slot-center {
+  .tmw-slot-machine.tmw-slot-machine--lux .slot-center {
     position: relative;
     left: auto;
     top: auto;
@@ -389,7 +389,7 @@
     order: 1;
   }
   
-  .slot-left {
+  .tmw-slot-machine.tmw-slot-machine--lux .slot-left {
     order: 2;
     flex-direction: column;
     align-items: center;
@@ -404,7 +404,7 @@
   
   .slot-left .slot-sound { display: none; }
   
-  .slot-right {
+  .tmw-slot-machine.tmw-slot-machine--lux .slot-right {
     order: 3;
     flex-direction: column;
     align-items: center;
@@ -434,10 +434,10 @@
   }
 }
 
-.tmw-slot-machine .mobile-sound { display: none; }
+.tmw-slot-machine.tmw-slot-machine--lux .mobile-sound { display: none; }
 
 @media (max-width: 650px) {
-  .tmw-slot-machine .mobile-sound {
+  .tmw-slot-machine.tmw-slot-machine--lux .mobile-sound {
     display: flex;
     justify-content: center;
     width: 100%;
@@ -445,7 +445,7 @@
     order: 10;
   }
   
-  .tmw-slot-machine .mobile-sound .sound-toggle {
+  .tmw-slot-machine.tmw-slot-machine--lux .mobile-sound .sound-toggle {
     font-size: 11px;
     padding: 4px 0;
   }
