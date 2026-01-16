@@ -7,7 +7,6 @@
   var offers = Array.isArray(config.offers) ? config.offers : [];
   var icons = ['bonus.png', 'peeks.png', 'deal.png', 'roses.png', 'value.png'];
   
-  // Default offers if none configured (fallback)
   var defaultOffers = [
     { title: '70% OFF Welcome Bonus', url: 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u' },
     { title: '10 Free Peeks', url: 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u' },
@@ -16,7 +15,6 @@
     { title: 'Best Value – From 0.01 Credits', url: 'https://www.livejasmin.com/en/promotions?category=girls&psid=Topmodels4u' }
   ];
   
-  // Use default offers if none provided
   if (!offers || offers.length === 0) {
     offers = defaultOffers;
   }
@@ -26,7 +24,9 @@
   var reels;
   var result;
   var placeholder;
-  var soundEnabled = true; // Default to ON so users hear sound
+  var teaserText;
+  var teaserSub;
+  var soundEnabled = true;
   var hasSpun = false;
   var spinInterval = null;
   var spinSound = null;
@@ -43,9 +43,7 @@
       spinSound.preload = 'auto';
       winSound.preload = 'auto';
       soundsLoaded = true;
-    } catch (e) {
-      console.log('[TMW Slot] Could not load sounds');
-    }
+    } catch (e) {}
   }
   
   function getIconUrl(icon) {
@@ -71,7 +69,6 @@
   function toggleSound() {
     soundEnabled = !soundEnabled;
     updateSoundUI();
-    // Try to unlock audio on toggle
     if (soundEnabled) {
       loadSounds();
       playSound(spinSound, true);
@@ -89,9 +86,7 @@
             sound.pause();
             sound.currentTime = 0;
           }
-        }).catch(function() {
-          // Autoplay blocked - that's ok
-        });
+        }).catch(function() {});
       }
     } catch (e) {}
   }
@@ -120,6 +115,32 @@
     });
   }
 
+  // BULLETPROOF: Hide teaser text with !important
+  function hideTeaser() {
+    if (placeholder) {
+      placeholder.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; height: 0 !important; overflow: hidden !important;';
+    }
+    if (teaserText) {
+      teaserText.style.cssText = 'display: none !important; visibility: hidden !important;';
+    }
+    if (teaserSub) {
+      teaserSub.style.cssText = 'display: none !important; visibility: hidden !important;';
+    }
+  }
+
+  // Show teaser text (only used on initial load)
+  function showTeaser() {
+    if (placeholder) {
+      placeholder.style.cssText = 'display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 4px !important; text-align: center !important; visibility: visible !important; opacity: 1 !important;';
+    }
+    if (teaserText) {
+      teaserText.style.cssText = 'display: inline !important; visibility: visible !important; color: #f4e4bc !important; font-family: "Playfair Display", serif !important; font-size: 14px !important; font-weight: 600 !important; text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37, 0 0 30px rgba(212,175,55,0.5) !important;';
+    }
+    if (teaserSub) {
+      teaserSub.style.cssText = 'display: inline !important; visibility: visible !important; color: rgba(212, 175, 55, 0.5) !important; font-family: Montserrat, sans-serif !important; font-size: 9px !important; letter-spacing: 1px !important; text-transform: uppercase !important;';
+    }
+  }
+
   function createClaimButton(href) {
     var claimBtn = document.createElement('a');
     claimBtn.className = 'tmw-claim-bonus';
@@ -131,32 +152,17 @@
     return claimBtn;
   }
 
-  function showWinResult(offer, slotRight) {
-    // Show bonus title text
-    result.textContent = offer.title;
-    result.className = 'tmw-result slot-result win-text show';
-    result.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important; font-family: Montserrat, sans-serif !important; font-size: 13px !important; font-weight: 600 !important; text-align: center !important; max-width: 160px !important; line-height: 1.3 !important; color: #f4e4bc !important; text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37 !important; margin-top: 4px !important;';
-
-    // Create and add CLAIM BONUS button
-    if (offer.url && slotRight) {
-      var claimBtn = createClaimButton(offer.url);
-      slotRight.insertBefore(claimBtn, slotRight.firstChild);
-    }
-  }
-
   function showResult() {
     setReelsSpinning(false);
     
-    // Ensure placeholder stays hidden (no "Your Bonus Awaits" after spin)
-    if (placeholder) {
-      placeholder.style.display = 'none';
-    }
+    // CRITICAL: Hide teaser immediately with bulletproof method
+    hideTeaser();
     
     var isWin = Math.random() * 100 < winRate;
     var winIconIndex = Math.floor(Math.random() * icons.length);
     var winIcon = icons[winIconIndex];
 
-    // Remove old claim button if exists
+    // Remove old claim button
     var oldClaim = container.querySelector('.tmw-claim-bonus');
     if (oldClaim) {
       oldClaim.parentNode.removeChild(oldClaim);
@@ -166,32 +172,36 @@
       container.classList.add('winning');
       setTimeout(function() { container.classList.remove('winning'); }, 800);
       
-      // Set all reels to winning icon
       reels.forEach(function(reel) {
         reel.innerHTML = '<img src="' + getIconUrl(winIcon) + '" alt="" style="width:78%!important;height:78%!important;object-fit:contain!important;">';
       });
       
       setReelsWin(true);
 
-      // Get the offer for this icon
       var offer = offers[winIconIndex];
       var slotRight = container.querySelector('.slot-right');
       
-      // If no offer at that index, use first available offer
       if (!offer || !offer.title) {
         offer = offers[0] || defaultOffers[0];
       }
       
       if (offer && offer.title) {
-        showWinResult(offer, slotRight);
+        // Show bonus title
+        result.textContent = offer.title;
+        result.className = 'tmw-result slot-result win-text show';
+        result.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important; font-family: Montserrat, sans-serif !important; font-size: 13px !important; font-weight: 600 !important; text-align: center !important; max-width: 160px !important; line-height: 1.3 !important; color: #f4e4bc !important; text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37 !important; margin-top: 4px !important;';
+
+        // Create CLAIM BONUS button
+        if (offer.url && slotRight) {
+          var claimBtn = createClaimButton(offer.url);
+          slotRight.insertBefore(claimBtn, slotRight.firstChild);
+        }
       } else {
-        // Fallback if still no offer
         result.textContent = 'You Win!';
         result.className = 'tmw-result slot-result win-text show';
         result.style.cssText = 'display: block !important; visibility: visible !important; font-family: Montserrat, sans-serif !important; font-size: 14px !important; font-weight: 600 !important; text-align: center !important; color: #f4e4bc !important; text-shadow: 0 0 10px #d4af37 !important;';
       }
 
-      // Play win sound
       if (soundEnabled && winSound) {
         playSound(winSound);
       }
@@ -199,7 +209,6 @@
       // LOSE
       setReelsWin(false);
       
-      // Set mixed icons (not all same)
       var mixed = icons.slice().sort(function() { return Math.random() - 0.5; }).slice(0, 3);
       if (mixed[0] === mixed[1] && mixed[1] === mixed[2]) {
         mixed[2] = icons.find(function(icon) { return icon !== mixed[0]; }) || mixed[2];
@@ -208,7 +217,7 @@
         reel.innerHTML = '<img src="' + getIconUrl(mixed[index]) + '" alt="" style="width:78%!important;height:78%!important;object-fit:contain!important;">';
       });
       
-      // Show Try Again text
+      // Show Try Again
       result.textContent = 'Try Again!';
       result.className = 'tmw-result slot-result lose-text show';
       result.style.cssText = 'display: block !important; visibility: visible !important; font-family: Montserrat, sans-serif !important; font-size: 14px !important; font-weight: 600 !important; text-align: center !important; color: rgba(255, 255, 255, 0.6) !important;';
@@ -219,22 +228,18 @@
   }
 
   function spin() {
-    // Load sounds on first interaction
     loadSounds();
     
-    // ALWAYS hide placeholder when spinning (Your Bonus Awaits disappears)
-    if (placeholder) {
-      placeholder.style.display = 'none';
-    }
-    hasSpun = true;
+    // CRITICAL: Hide teaser when spinning starts
+    hideTeaser();
     
+    hasSpun = true;
     btn.disabled = true;
     result.textContent = '';
     result.className = 'tmw-result slot-result';
     result.style.cssText = '';
     setReelsWin(false);
 
-    // Remove old claim button
     var oldClaim = container.querySelector('.tmw-claim-bonus');
     if (oldClaim) {
       oldClaim.parentNode.removeChild(oldClaim);
@@ -242,7 +247,6 @@
 
     setReelsSpinning(true);
 
-    // Play spin sound
     if (soundEnabled && spinSound) {
       playSound(spinSound);
     }
@@ -266,7 +270,6 @@
   function forceContainerStyles() {
     if (!container) return;
     
-    // Force gold border
     container.style.border = '2px solid rgba(212, 175, 55, 0.5)';
     container.style.borderColor = 'rgba(212, 175, 55, 0.5)';
     container.style.borderStyle = 'solid';
@@ -274,24 +277,6 @@
     container.style.borderRadius = '8px';
     container.style.background = 'linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 50%, #1a1a1a 100%)';
     container.style.boxShadow = '0 0 0 1px rgba(212,175,55,0.4), 0 0 0 3px rgba(212,175,55,0.15), 0 20px 40px -15px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)';
-    
-    // Force placeholder visible initially
-    if (placeholder) {
-      placeholder.style.display = 'flex';
-      placeholder.style.visibility = 'visible';
-      placeholder.style.opacity = '1';
-    }
-    
-    // Force teaser text styles
-    var teaserText = container.querySelector('.teaser-text');
-    if (teaserText) {
-      teaserText.style.cssText = 'display: inline !important; visibility: visible !important; color: #f4e4bc !important; font-family: "Playfair Display", serif !important; font-size: 14px !important; font-weight: 600 !important; text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37, 0 0 30px rgba(212,175,55,0.5) !important;';
-    }
-    
-    var teaserSub = container.querySelector('.teaser-sub');
-    if (teaserSub) {
-      teaserSub.style.cssText = 'display: inline !important; visibility: visible !important; color: rgba(212, 175, 55, 0.5) !important; font-family: Montserrat, sans-serif !important; font-size: 9px !important; letter-spacing: 1px !important; text-transform: uppercase !important;';
-    }
   }
 
   function init() {
@@ -303,38 +288,31 @@
     });
 
     container = document.querySelector('.tmw-slot-machine');
-    if (!container) {
-      return;
-    }
+    if (!container) return;
 
     btn = container.querySelector('.tmw-slot-btn');
     reels = container.querySelectorAll('.reel');
     result = container.querySelector('.tmw-result');
     placeholder = container.querySelector('.tmw-slot-placeholder');
+    teaserText = container.querySelector('.teaser-text');
+    teaserSub = container.querySelector('.teaser-sub');
 
-    if (!btn || reels.length === 0 || !result) {
-      return;
-    }
+    if (!btn || reels.length === 0 || !result) return;
 
-    // Read sound default from data attribute
     var soundDefault = container.getAttribute('data-sound-default');
     soundEnabled = (soundDefault === 'on');
 
-    // Force container styles
     forceContainerStyles();
-
-    // Initialize sound UI
     updateSoundUI();
-
-    // Set random icons in reels
     setRandomIcons();
+    
+    // Show teaser on initial load (before any spin)
+    showTeaser();
 
-    // Spin button click
     btn.addEventListener('click', function() {
       spin();
     });
     
-    // Sound toggle click
     var allSoundToggles = container.querySelectorAll('.tmw-slot-sound-toggle, .sound-toggle');
     allSoundToggles.forEach(function(toggle) {
       toggle.addEventListener('click', function(e) {
@@ -344,7 +322,6 @@
       });
     });
 
-    // Preload sounds on any user interaction
     document.addEventListener('click', function() { loadSounds(); }, { once: true });
     document.addEventListener('touchstart', function() { loadSounds(); }, { once: true });
   }
