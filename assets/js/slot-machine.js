@@ -26,7 +26,7 @@
   var placeholder;
   var teaserText;
   var teaserSub;
-  var soundEnabled = true;
+  var soundEnabled = false; // DEFAULT OFF
   var hasSpun = false;
   var spinInterval = null;
   var spinSound = null;
@@ -115,7 +115,6 @@
     });
   }
 
-  // BULLETPROOF: Hide teaser text with !important
   function hideTeaser() {
     if (placeholder) {
       placeholder.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; height: 0 !important; overflow: hidden !important;';
@@ -128,10 +127,9 @@
     }
   }
 
-  // Show teaser text (only used on initial load)
   function showTeaser() {
     if (placeholder) {
-      placeholder.style.cssText = 'display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 4px !important; text-align: center !important; visibility: visible !important; opacity: 1 !important;';
+      placeholder.style.cssText = 'display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 4px !important; text-align: center !important; visibility: visible !important; opacity: 1 !important; height: auto !important; overflow: visible !important;';
     }
     if (teaserText) {
       teaserText.style.cssText = 'display: inline !important; visibility: visible !important; color: #f4e4bc !important; font-family: "Playfair Display", serif !important; font-size: 14px !important; font-weight: 600 !important; text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37, 0 0 30px rgba(212,175,55,0.5) !important;';
@@ -155,9 +153,6 @@
   function showResult() {
     setReelsSpinning(false);
     
-    // CRITICAL: Hide teaser immediately with bulletproof method
-    hideTeaser();
-    
     var isWin = Math.random() * 100 < winRate;
     var winIconIndex = Math.floor(Math.random() * icons.length);
     var winIcon = icons[winIconIndex];
@@ -169,6 +164,9 @@
     }
 
     if (isWin) {
+      // WIN: Hide teaser, show CLAIM BONUS + bonus title
+      hideTeaser();
+      
       container.classList.add('winning');
       setTimeout(function() { container.classList.remove('winning'); }, 800);
       
@@ -186,12 +184,10 @@
       }
       
       if (offer && offer.title) {
-        // Show bonus title
         result.textContent = offer.title;
         result.className = 'tmw-result slot-result win-text show';
         result.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important; font-family: Montserrat, sans-serif !important; font-size: 13px !important; font-weight: 600 !important; text-align: center !important; max-width: 160px !important; line-height: 1.3 !important; color: #f4e4bc !important; text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37 !important; margin-top: 4px !important;';
 
-        // Create CLAIM BONUS button
         if (offer.url && slotRight) {
           var claimBtn = createClaimButton(offer.url);
           slotRight.insertBefore(claimBtn, slotRight.firstChild);
@@ -206,7 +202,7 @@
         playSound(winSound);
       }
     } else {
-      // LOSE
+      // LOSE: Show teaser + Try Again!
       setReelsWin(false);
       
       var mixed = icons.slice().sort(function() { return Math.random() - 0.5; }).slice(0, 3);
@@ -217,10 +213,13 @@
         reel.innerHTML = '<img src="' + getIconUrl(mixed[index]) + '" alt="" style="width:78%!important;height:78%!important;object-fit:contain!important;">';
       });
       
-      // Show Try Again
+      // SHOW teaser text again on LOSE
+      showTeaser();
+      
+      // Show Try Again below teaser
       result.textContent = 'Try Again!';
       result.className = 'tmw-result slot-result lose-text show';
-      result.style.cssText = 'display: block !important; visibility: visible !important; font-family: Montserrat, sans-serif !important; font-size: 14px !important; font-weight: 600 !important; text-align: center !important; color: rgba(255, 255, 255, 0.6) !important;';
+      result.style.cssText = 'display: block !important; visibility: visible !important; font-family: Montserrat, sans-serif !important; font-size: 14px !important; font-weight: 600 !important; text-align: center !important; color: rgba(255, 255, 255, 0.6) !important; margin-top: 4px !important;';
     }
 
     btn.disabled = false;
@@ -230,7 +229,7 @@
   function spin() {
     loadSounds();
     
-    // CRITICAL: Hide teaser when spinning starts
+    // Hide teaser during spinning animation
     hideTeaser();
     
     hasSpun = true;
@@ -270,13 +269,8 @@
   function forceContainerStyles() {
     if (!container) return;
     
-    container.style.border = '2px solid rgba(212, 175, 55, 0.5)';
-    container.style.borderColor = 'rgba(212, 175, 55, 0.5)';
-    container.style.borderStyle = 'solid';
-    container.style.borderWidth = '2px';
-    container.style.borderRadius = '8px';
-    container.style.background = 'linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 50%, #1a1a1a 100%)';
-    container.style.boxShadow = '0 0 0 1px rgba(212,175,55,0.4), 0 0 0 3px rgba(212,175,55,0.15), 0 20px 40px -15px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)';
+    // Use cssText with !important to override any theme CSS
+    container.style.cssText = container.style.cssText + '; border: 2px solid rgba(212, 175, 55, 0.5) !important; border-color: rgba(212, 175, 55, 0.5) !important; border-style: solid !important; border-width: 2px !important; border-radius: 8px !important; outline: none !important;';
   }
 
   function init() {
@@ -299,14 +293,15 @@
 
     if (!btn || reels.length === 0 || !result) return;
 
+    // Read sound default from data attribute (defaults to 'off' now)
     var soundDefault = container.getAttribute('data-sound-default');
     soundEnabled = (soundDefault === 'on');
 
+    // Force gold border
     forceContainerStyles();
+    
     updateSoundUI();
     setRandomIcons();
-    
-    // Show teaser on initial load (before any spin)
     showTeaser();
 
     btn.addEventListener('click', function() {
