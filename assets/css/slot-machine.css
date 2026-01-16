@@ -1,17 +1,7 @@
-/* TMW Slot Machine - Luxury Edition v2.0.0 */
+/* TMW Slot Machine - Luxury Edition v3.0 */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
 
-:root {
-  --tmw-gold: #d4af37;
-  --tmw-gold-light: #f4e4bc;
-  --tmw-gold-dark: #a68b2c;
-  --tmw-champagne: #f7e7ce;
-  --tmw-dark: #0f0f0f;
-  --tmw-dark-card: #1a1a1a;
-  --tmw-white: #ffffff;
-}
-
-/* Main Container */
+/* Main Container - GOLD BORDER */
 .tmw-slot-machine.tmw-slot-machine--lux {
   position: relative !important;
   height: 130px !important;
@@ -19,25 +9,14 @@
   border-radius: 8px !important;
   background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 50%, #1a1a1a 100%) !important;
   overflow: hidden !important;
-  box-shadow: 
-    0 0 0 1px rgba(212, 175, 55, 0.4),
-    0 0 0 3px rgba(212, 175, 55, 0.15),
-    0 20px 40px -15px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 0 0 1px rgba(212,175,55,0.4), 0 0 0 3px rgba(212,175,55,0.15), 0 20px 40px -15px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05) !important;
   font-family: 'Montserrat', sans-serif !important;
-  border: 2px solid rgba(212, 175, 55, 0.5) !important;
-}
-
-/* Gold gradient line at top */
-.tmw-slot-machine.tmw-slot-machine--lux::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  height: 2px !important;
-  background: linear-gradient(90deg, transparent 0%, var(--tmw-gold) 50%, transparent 100%) !important;
-  opacity: 0.6 !important;
+  border: 2px solid rgba(212,175,55,0.5) !important;
+  border-color: rgba(212,175,55,0.5) !important;
+  border-style: solid !important;
+  border-width: 2px !important;
+  min-height: auto !important;
+  max-height: 130px !important;
 }
 
 /* Body Layout */
@@ -49,6 +28,7 @@
   padding: 0 28px !important;
   position: relative !important;
   z-index: 5 !important;
+  min-height: auto !important;
 }
 
 /* Headline */
@@ -61,7 +41,7 @@
   font-size: 13px !important;
   font-weight: 600 !important;
   letter-spacing: 0.5px !important;
-  color: var(--tmw-gold-light) !important;
+  color: #f4e4bc !important;
   white-space: nowrap !important;
   z-index: 10 !important;
 }
@@ -77,8 +57,7 @@
 
 /* SPIN Button */
 .tmw-slot-machine.tmw-slot-machine--lux .slot-btn,
-.tmw-slot-machine.tmw-slot-machine--lux button.slot-btn,
-.tmw-slot-machine.tmw-slot-machine--lux .tmw-slot-btn {
+.tmw-slot-machine.tmw-slot-machine--lux button.slot-btn {
   position: relative !important;
   min-width: 140px !important;
   height: 44px !important;
@@ -90,88 +69,24 @@
   font-weight: 700 !important;
   letter-spacing: 2px !important;
   text-transform: uppercase !important;
-  color: var(--tmw-dark) !important;
+  color: #0f0f0f !important;
   cursor: pointer !important;
   background: linear-gradient(180deg, #f4e4bc 0%, #d4af37 50%, #a68b2c 100%) !important;
-  box-shadow: 
-    0 4px 15px rgba(212, 175, 55, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
-  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 0 rgba(0,0,0,0.1) !important;
   overflow: hidden !important;
   animation: tmw-btn-pulse 2s ease-in-out infinite !important;
 }
 
 @keyframes tmw-btn-pulse {
-  0%, 100% { 
-    box-shadow: 
-      0 4px 15px rgba(212, 175, 55, 0.3),
-      0 0 0 0 rgba(212, 175, 55, 0),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-  }
-  50% { 
-    box-shadow: 
-      0 4px 20px rgba(212, 175, 55, 0.5),
-      0 0 25px 2px rgba(212, 175, 55, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-  }
+  0%, 100% { box-shadow: 0 4px 15px rgba(212,175,55,0.3), 0 0 0 0 rgba(212,175,55,0), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 0 rgba(0,0,0,0.1); }
+  50% { box-shadow: 0 4px 20px rgba(212,175,55,0.5), 0 0 25px 2px rgba(212,175,55,0.25), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 0 rgba(0,0,0,0.1); }
 }
 
-.tmw-slot-machine.tmw-slot-machine--lux .slot-btn:disabled,
-.tmw-slot-machine.tmw-slot-machine--lux button.slot-btn:disabled {
-  animation: none !important;
-}
+.tmw-slot-machine.tmw-slot-machine--lux .slot-btn:disabled { animation: none !important; }
 
-.tmw-slot-machine.tmw-slot-machine--lux .slot-btn::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: -100% !important;
-  width: 60% !important;
-  height: 100% !important;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
-  transition: left 0.5s ease !important;
-}
-
-.tmw-slot-machine.tmw-slot-machine--lux .slot-btn:hover::before {
-  left: 100% !important;
-}
-
-.tmw-slot-machine.tmw-slot-machine--lux .slot-btn:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: 
-    0 6px 20px rgba(212, 175, 55, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
-}
-
-.tmw-slot-machine.tmw-slot-machine--lux .slot-btn:active {
-  transform: translateY(0) !important;
-}
-
-.tmw-slot-machine.tmw-slot-machine--lux .slot-btn:disabled,
-.tmw-slot-machine.tmw-slot-machine--lux button.slot-btn:disabled {
-  background: linear-gradient(180deg, #555 0%, #3a3a3a 50%, #2a2a2a 100%) !important;
-  color: #888 !important;
-  box-shadow: none !important;
-  cursor: not-allowed !important;
-}
-
-.tmw-slot-machine.tmw-slot-machine--lux .slot-btn:disabled::before {
-  display: none !important;
-}
-
-/* Sound Toggle - BULLETPROOF with !important */
-.tmw-slot-machine.tmw-slot-machine--lux .slot-sound {
-  display: flex !important;
-}
-
+/* Sound Toggle - GOLD */
 .tmw-slot-machine.tmw-slot-machine--lux .sound-toggle,
-.tmw-slot-machine.tmw-slot-machine--lux button.sound-toggle,
-.tmw-slot-machine.tmw-slot-machine--lux .tmw-slot-sound-toggle,
-.tmw-slot-machine.tmw-slot-machine--lux button.tmw-slot-sound-toggle {
+.tmw-slot-machine.tmw-slot-machine--lux button.sound-toggle {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -179,30 +94,18 @@
   border: none !important;
   border-radius: 0 !important;
   background: transparent !important;
+  background-color: transparent !important;
   font-family: 'Montserrat', sans-serif !important;
   font-size: 9px !important;
   font-weight: 500 !important;
   letter-spacing: 0.5px !important;
-  color: rgba(212, 175, 55, 0.5) !important;
+  color: rgba(212,175,55,0.5) !important;
   cursor: pointer !important;
-  transition: all 0.3s ease !important;
-  text-decoration: none !important;
-  text-transform: none !important;
-  line-height: normal !important;
+  box-shadow: none !important;
 }
 
-.tmw-slot-machine.tmw-slot-machine--lux .sound-toggle:hover,
-.tmw-slot-machine.tmw-slot-machine--lux button.sound-toggle:hover,
-.tmw-slot-machine.tmw-slot-machine--lux .tmw-slot-sound-toggle:hover {
-  color: var(--tmw-gold) !important;
-  background: transparent !important;
-}
-
-.tmw-slot-machine.tmw-slot-machine--lux .sound-toggle.active,
-.tmw-slot-machine.tmw-slot-machine--lux button.sound-toggle.active,
-.tmw-slot-machine.tmw-slot-machine--lux .tmw-slot-sound-toggle.active {
-  color: var(--tmw-gold) !important;
-}
+.tmw-slot-machine.tmw-slot-machine--lux .sound-toggle:hover { color: #d4af37 !important; }
+.tmw-slot-machine.tmw-slot-machine--lux .sound-toggle.active { color: #d4af37 !important; }
 
 /* Center - Reels */
 .tmw-slot-machine.tmw-slot-machine--lux .slot-center {
@@ -222,9 +125,9 @@
   gap: 8px !important;
   padding: 10px 14px !important;
   border-radius: 6px !important;
-  background: rgba(0, 0, 0, 0.4) !important;
-  border: 1px solid rgba(212, 175, 55, 0.1) !important;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  background: rgba(0,0,0,0.4) !important;
+  border: 1px solid rgba(212,175,55,0.1) !important;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.3) !important;
 }
 
 .tmw-slot-machine.tmw-slot-machine--lux .reel {
@@ -232,44 +135,25 @@
   height: 54px !important;
   border-radius: 4px !important;
   background: linear-gradient(180deg, #1f1f1f 0%, #141414 100%) !important;
-  border: 1px solid rgba(212, 175, 55, 0.15) !important;
+  border: 1px solid rgba(212,175,55,0.15) !important;
+  border-color: rgba(212,175,55,0.15) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4) !important;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.4) !important;
   overflow: hidden !important;
 }
 
-.tmw-slot-machine.tmw-slot-machine--lux .reel.spinning {
-  animation: tmw-reel-spin 0.1s linear infinite !important;
-}
-
-@keyframes tmw-reel-spin {
-  0% { border-color: rgba(212, 175, 55, 0.15); }
-  50% { border-color: rgba(212, 175, 55, 0.35); }
-  100% { border-color: rgba(212, 175, 55, 0.15); }
+.tmw-slot-machine.tmw-slot-machine--lux .reel.win {
+  border-color: #d4af37 !important;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.4), 0 0 12px rgba(212,175,55,0.25) !important;
 }
 
 .tmw-slot-machine.tmw-slot-machine--lux .reel img {
   width: 78% !important;
   height: 78% !important;
   object-fit: contain !important;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) !important;
-}
-
-.tmw-slot-machine.tmw-slot-machine--lux .reel.win {
-  border-color: var(--tmw-gold) !important;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 12px rgba(212, 175, 55, 0.25) !important;
-}
-
-.tmw-slot-machine.tmw-slot-machine--lux .reel.win img {
-  animation: tmw-icon-glow 1s ease-in-out infinite !important;
-}
-
-@keyframes tmw-icon-glow {
-  0%, 100% { filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) brightness(1); }
-  50% { filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.4)) brightness(1.1); }
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)) !important;
 }
 
 /* Right Column */
@@ -281,11 +165,14 @@
   gap: 6px !important;
   flex-shrink: 0 !important;
   min-width: 150px !important;
+  min-height: auto !important;
 }
 
-/* Teaser Placeholder */
+/* Placeholder - "Your Bonus Awaits" */
 .tmw-slot-machine.tmw-slot-machine--lux .tmw-slot-placeholder {
   display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
@@ -293,85 +180,59 @@
   text-align: center !important;
 }
 
-.tmw-slot-machine.tmw-slot-machine--lux .tmw-slot-placeholder .teaser-text {
+.tmw-slot-machine.tmw-slot-machine--lux .teaser-text {
+  display: inline !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   font-family: 'Playfair Display', serif !important;
   font-size: 14px !important;
   font-weight: 600 !important;
-  color: var(--tmw-gold-light) !important;
-  text-shadow: 
-    0 0 10px var(--tmw-gold),
-    0 0 20px var(--tmw-gold),
-    0 0 30px rgba(212, 175, 55, 0.5) !important;
+  color: #f4e4bc !important;
+  text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37, 0 0 30px rgba(212,175,55,0.5) !important;
   animation: tmw-teaser-glow 2s ease-in-out infinite !important;
 }
 
-.tmw-slot-machine.tmw-slot-machine--lux .tmw-slot-placeholder .teaser-sub {
+@keyframes tmw-teaser-glow {
+  0%, 100% { opacity: 0.8; text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37, 0 0 30px rgba(212,175,55,0.5); }
+  50% { opacity: 1; text-shadow: 0 0 15px #d4af37, 0 0 30px #d4af37, 0 0 45px rgba(212,175,55,0.7); }
+}
+
+.tmw-slot-machine.tmw-slot-machine--lux .teaser-sub {
+  display: inline !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   font-family: 'Montserrat', sans-serif !important;
   font-size: 9px !important;
   font-weight: 500 !important;
   letter-spacing: 1px !important;
   text-transform: uppercase !important;
-  color: rgba(212, 175, 55, 0.5) !important;
+  color: rgba(212,175,55,0.5) !important;
 }
 
-@keyframes tmw-teaser-glow {
-  0%, 100% { 
-    opacity: 0.8;
-    text-shadow: 
-      0 0 10px var(--tmw-gold),
-      0 0 20px var(--tmw-gold),
-      0 0 30px rgba(212, 175, 55, 0.5);
-  }
-  50% { 
-    opacity: 1;
-    text-shadow: 
-      0 0 15px var(--tmw-gold),
-      0 0 30px var(--tmw-gold),
-      0 0 45px rgba(212, 175, 55, 0.7);
-  }
-}
-
-/* Surprise Image */
-.tmw-slot-machine.tmw-slot-machine--lux .tmw-surprise-img {
-  max-width: 45px !important;
-  max-height: 45px !important;
-  filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.3)) !important;
-  animation: tmw-float 3s ease-in-out infinite !important;
-}
-
-@keyframes tmw-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-
-/* Result Text - BIGGER (14px) */
+/* Result Text */
 .tmw-slot-machine.tmw-slot-machine--lux .slot-result,
 .tmw-slot-machine.tmw-slot-machine--lux .tmw-result {
   font-family: 'Montserrat', sans-serif !important;
   font-size: 14px !important;
   font-weight: 600 !important;
   text-align: center !important;
-  color: rgba(255, 255, 255, 0.4) !important;
+  color: rgba(255,255,255,0.4) !important;
   max-width: 150px !important;
   line-height: 1.3 !important;
-  transition: all 0.3s ease !important;
-  order: 2 !important;
 }
 
 .tmw-slot-machine.tmw-slot-machine--lux .slot-result.win-text,
 .tmw-slot-machine.tmw-slot-machine--lux .tmw-result.win-text {
-  color: var(--tmw-gold-light) !important;
+  color: #f4e4bc !important;
+  text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37 !important;
   animation: tmw-text-flash 1s ease-in-out infinite !important;
 }
 
-@keyframes tmw-text-flash {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
+@keyframes tmw-text-flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
 .tmw-slot-machine.tmw-slot-machine--lux .slot-result.lose-text,
 .tmw-slot-machine.tmw-slot-machine--lux .tmw-result.lose-text {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: rgba(255,255,255,0.6) !important;
   animation: tmw-text-flash 1s ease-in-out infinite !important;
 }
 
@@ -379,6 +240,8 @@
 .tmw-slot-machine.tmw-slot-machine--lux .tmw-claim-bonus,
 .tmw-slot-machine.tmw-slot-machine--lux a.tmw-claim-bonus {
   display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   align-items: center !important;
   justify-content: center !important;
   min-width: 140px !important;
@@ -392,54 +255,35 @@
   letter-spacing: 1.5px !important;
   text-transform: uppercase !important;
   text-decoration: none !important;
-  color: var(--tmw-dark) !important;
+  color: #0f0f0f !important;
   background: linear-gradient(180deg, #f4e4bc 0%, #d4af37 50%, #a68b2c 100%) !important;
-  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35) !important;
-  transition: all 0.3s ease !important;
-  order: 1 !important;
+  box-shadow: 0 4px 15px rgba(212,175,55,0.35) !important;
+  margin-bottom: 8px !important;
 }
 
-.tmw-slot-machine.tmw-slot-machine--lux .tmw-claim-bonus:hover,
-.tmw-slot-machine.tmw-slot-machine--lux a.tmw-claim-bonus:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.45) !important;
-  color: var(--tmw-dark) !important;
-  text-decoration: none !important;
+/* Surprise Image - limit size */
+.tmw-slot-machine.tmw-slot-machine--lux .tmw-surprise-img {
+  max-width: 45px !important;
+  max-height: 45px !important;
 }
 
-/* Win Overlay */
-.tmw-slot-machine.tmw-slot-machine--lux.winning::after {
-  content: '' !important;
-  position: absolute !important;
-  inset: 0 !important;
-  background: radial-gradient(ellipse at 50% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 70%) !important;
-  animation: tmw-win-flash 0.8s ease-out !important;
-  pointer-events: none !important;
-}
+/* Mobile Sound Toggle */
+.tmw-slot-machine.tmw-slot-machine--lux .mobile-sound { display: none !important; }
 
-@keyframes tmw-win-flash {
-  0% { opacity: 0; }
-  30% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-/* ===========================================
-   MOBILE RESPONSIVE (max-width: 650px)
-   =========================================== */
+/* MOBILE RESPONSIVE */
 @media (max-width: 650px) {
   .tmw-slot-machine.tmw-slot-machine--lux {
     height: auto !important;
-    min-height: 300px !important;
+    min-height: 280px !important;
+    max-height: none !important;
     padding: 40px 20px 20px !important;
   }
-  
   .tmw-slot-machine.tmw-slot-machine--lux .slot-body {
     flex-direction: column !important;
     align-items: center !important;
     gap: 12px !important;
     padding: 0 !important;
   }
-  
   .tmw-slot-machine.tmw-slot-machine--lux .slot-center {
     position: relative !important;
     left: auto !important;
@@ -447,121 +291,14 @@
     transform: none !important;
     order: 1 !important;
   }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-left {
-    order: 2 !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0 !important;
-    width: 100% !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-left .slot-btn,
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-left button.slot-btn {
-    width: 220px !important;
-    min-width: 220px !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-left .slot-sound {
-    display: none !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-right {
-    order: 3 !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 8px !important;
-    width: 100% !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .tmw-slot-placeholder {
-    display: flex !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .tmw-slot-placeholder .teaser-text {
-    font-size: 16px !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-right .tmw-claim-bonus {
-    width: 220px !important;
-    min-width: 220px !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-right .slot-result,
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-right .tmw-result {
-    max-width: 100% !important;
-    font-size: 15px !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-headline {
-    top: 14px !important;
-    font-size: 12px !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .reel {
-    width: 58px !important;
-    height: 58px !important;
-  }
-}
-
-/* Mobile Sound Toggle */
-.tmw-slot-machine.tmw-slot-machine--lux .mobile-sound {
-  display: none !important;
-}
-
-@media (max-width: 650px) {
-  .tmw-slot-machine.tmw-slot-machine--lux .mobile-sound {
-    display: flex !important;
-    justify-content: center !important;
-    width: 100% !important;
-    margin-top: 8px !important;
-    order: 10 !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .mobile-sound .sound-toggle,
-  .tmw-slot-machine.tmw-slot-machine--lux .mobile-sound button.sound-toggle {
-    font-size: 11px !important;
-    padding: 4px 0 !important;
-    color: rgba(212, 175, 55, 0.5) !important;
-  }
-}
-
-/* ===========================================
-   SMALL MOBILE (max-width: 480px)
-   =========================================== */
-@media (max-width: 480px) {
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-left .slot-btn,
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-right .tmw-claim-bonus {
-    width: 180px !important;
-    min-width: 180px !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-btn {
-    height: 40px !important;
-    font-size: 11px !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .reel {
-    width: 52px !important;
-    height: 52px !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .slot-reels {
-    gap: 6px !important;
-    padding: 8px 12px !important;
-  }
-  
-  .tmw-slot-machine.tmw-slot-machine--lux .tmw-claim-bonus {
-    height: 38px !important;
-  }
-}
-
-/* Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-  .tmw-slot-machine.tmw-slot-machine--lux *,
-  .tmw-slot-machine.tmw-slot-machine--lux *::before,
-  .tmw-slot-machine.tmw-slot-machine--lux *::after {
-    animation: none !important;
-    transition: none !important;
-  }
+  .tmw-slot-machine.tmw-slot-machine--lux .slot-left { order: 2 !important; width: 100% !important; }
+  .tmw-slot-machine.tmw-slot-machine--lux .slot-left .slot-btn { width: 220px !important; min-width: 220px !important; }
+  .tmw-slot-machine.tmw-slot-machine--lux .slot-left .slot-sound { display: none !important; }
+  .tmw-slot-machine.tmw-slot-machine--lux .slot-right { order: 3 !important; width: 100% !important; min-height: auto !important; }
+  .tmw-slot-machine.tmw-slot-machine--lux .slot-right .tmw-claim-bonus { width: 220px !important; min-width: 220px !important; }
+  .tmw-slot-machine.tmw-slot-machine--lux .slot-right .slot-result { font-size: 15px !important; max-width: 100% !important; }
+  .tmw-slot-machine.tmw-slot-machine--lux .mobile-sound { display: flex !important; justify-content: center !important; width: 100% !important; margin-top: 8px !important; order: 10 !important; }
+  .tmw-slot-machine.tmw-slot-machine--lux .slot-headline { font-size: 12px !important; top: 14px !important; }
+  .tmw-slot-machine.tmw-slot-machine--lux .teaser-text { font-size: 16px !important; }
+  .tmw-slot-machine.tmw-slot-machine--lux .reel { width: 58px !important; height: 58px !important; }
 }
