@@ -147,6 +147,11 @@
   function showResult() {
     setReelsSpinning(false);
     
+    // Ensure placeholder stays hidden (no "Your Bonus Awaits" after spin)
+    if (placeholder) {
+      placeholder.style.display = 'none';
+    }
+    
     var isWin = Math.random() * 100 < winRate;
     var winIconIndex = Math.floor(Math.random() * icons.length);
     var winIcon = icons[winIconIndex];
@@ -217,8 +222,8 @@
     // Load sounds on first interaction
     loadSounds();
     
-    // Hide placeholder on first spin (Your Bonus Awaits disappears)
-    if (!hasSpun && placeholder) {
+    // ALWAYS hide placeholder when spinning (Your Bonus Awaits disappears)
+    if (placeholder) {
       placeholder.style.display = 'none';
     }
     hasSpun = true;
