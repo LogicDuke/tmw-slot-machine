@@ -30,18 +30,16 @@
     });
   }
 
-  function showSurprise() {
-    if (!hasSpun && placeholder) {
-      placeholder.innerHTML = `<img src="${assetsUrl}/img/surprice-trans.png" alt="Surprise" class="tmw-surprise-img">`;
-    }
-  }
+  // REMOVED: showSurprise() function - we want teaser text to stay visible
 
   function updateSoundUI() {
-    const toggle = container ? container.querySelector('.tmw-slot-sound-toggle, .sound-toggle') : null;
-    if (toggle) {
+    const allToggles = container ? container.querySelectorAll('.tmw-slot-sound-toggle, .sound-toggle') : [];
+    allToggles.forEach(toggle => {
       toggle.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
       toggle.classList.toggle('active', soundEnabled);
-    }
+      // Force gold color via JS
+      toggle.style.color = soundEnabled ? '#d4af37' : 'rgba(212, 175, 55, 0.5)';
+    });
   }
 
   function toggleSound() {
@@ -76,6 +74,43 @@
     });
   }
 
+  function applyClaimButtonStyles(btn) {
+    // Apply inline styles to dynamically created claim button
+    btn.style.cssText = `
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-width: 140px !important;
+      height: 40px !important;
+      padding: 0 20px !important;
+      border: none !important;
+      border-radius: 4px !important;
+      font-family: Montserrat, sans-serif !important;
+      font-size: 10px !important;
+      font-weight: 700 !important;
+      letter-spacing: 1.5px !important;
+      text-transform: uppercase !important;
+      text-decoration: none !important;
+      color: #0f0f0f !important;
+      background: linear-gradient(180deg, #f4e4bc 0%, #d4af37 50%, #a68b2c 100%) !important;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35) !important;
+      margin-bottom: 8px !important;
+    `;
+  }
+
+  function applyResultStyles(el, isWin) {
+    el.style.cssText = `
+      font-family: Montserrat, sans-serif !important;
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      text-align: center !important;
+      max-width: 150px !important;
+      line-height: 1.3 !important;
+      color: ${isWin ? '#f4e4bc' : 'rgba(255, 255, 255, 0.6)'} !important;
+      ${isWin ? 'text-shadow: 0 0 10px #d4af37 !important;' : ''}
+    `;
+  }
+
   function showResult() {
     setReelsSpinning(false);
     
@@ -98,6 +133,7 @@
       if (offer && offer.title) {
         result.textContent = offer.title;
         result.className = 'tmw-result slot-result win-text show';
+        applyResultStyles(result, true);
 
         let claimHref = '';
         if (offer.url) {
@@ -118,6 +154,7 @@
           claimBtn.target = '_blank';
           claimBtn.rel = 'nofollow noopener noreferrer';
           claimBtn.textContent = 'Claim Bonus';
+          applyClaimButtonStyles(claimBtn);
           const slotRight = container.querySelector('.slot-right');
           if (slotRight) {
             slotRight.prepend(claimBtn);
@@ -126,6 +163,7 @@
       } else {
         result.textContent = 'You Win!';
         result.className = 'tmw-result slot-result win-text show';
+        applyResultStyles(result, true);
       }
 
       if (soundEnabled) {
@@ -144,6 +182,7 @@
       });
       result.textContent = 'Try Again!';
       result.className = 'tmw-result slot-result lose-text show';
+      applyResultStyles(result, false);
     }
 
     btn.disabled = false;
@@ -151,6 +190,7 @@
   }
 
   function spin() {
+    // Hide placeholder on first spin
     if (!hasSpun && placeholder) {
       placeholder.style.display = 'none';
     }
@@ -188,6 +228,14 @@
     }
   }
 
+  function forceContainerStyles() {
+    if (!container) return;
+    
+    // Force gold border on container
+    container.style.border = '2px solid rgba(212, 175, 55, 0.5)';
+    container.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+  }
+
   function init() {
     window.addEventListener('pagehide', () => {
       if (spinInterval) {
@@ -212,15 +260,16 @@
       return;
     }
 
-    updateSoundUI();
-    
-    allSoundToggles.forEach(toggle => {
-      toggle.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
-      toggle.classList.toggle('active', soundEnabled);
-    });
+    // Force container styles
+    forceContainerStyles();
 
-    showSurprise();
+    // Initialize sound UI
+    updateSoundUI();
+
+    // Set random icons in reels (but keep teaser text visible!)
     setRandomIcons();
+
+    // NOTE: We do NOT call showSurprise() anymore - teaser text stays visible
 
     btn.addEventListener('click', () => {
       tryEnableSound();
@@ -230,10 +279,6 @@
     allSoundToggles.forEach(toggle => {
       toggle.addEventListener('click', () => {
         toggleSound();
-        allSoundToggles.forEach(t => {
-          t.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
-          t.classList.toggle('active', soundEnabled);
-        });
       });
     });
 
