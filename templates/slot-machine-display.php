@@ -10,6 +10,7 @@ if (!is_string($trigger_headline) || $trigger_headline === '') {
     $trigger_headline = $headline_default;
 }
 ?>
+<div class="tmw-slot-machine-container">
 <div class="tmw-slot-machine tmw-slot-machine--lux" data-win-rate="<?php echo esc_attr($win_rate); ?>" data-sound-default="<?php echo esc_attr($sound_default); ?>" data-offers="<?php echo $offers_json; ?>">
   
   <div class="slot-headline"><?php echo esc_html($trigger_headline); ?></div>
@@ -43,6 +44,7 @@ if (!is_string($trigger_headline) || $trigger_headline === '') {
       <button class="sound-toggle tmw-slot-sound-toggle" aria-label="Sound Off">🔇 Sound Off</button>
     </div>
   </div>
+</div>
 </div>
 
 <style>
@@ -306,9 +308,9 @@ if (!is_string($trigger_headline) || $trigger_headline === '') {
 }
 
 /* =========================================================
-   MOBILE RESPONSIVE - Works because NO inline styles!
+   NARROW CONTAINER RESPONSIVE - Reuses the mobile layout
    ========================================================= */
-@media (max-width: 650px) {
+@container tmw-slot-machine (max-width: 650px) {
   .tmw-slot-machine.tmw-slot-machine--lux {
     height: auto;
     min-height: 320px;
@@ -318,6 +320,9 @@ if (!is_string($trigger_headline) || $trigger_headline === '') {
   .tmw-slot-machine.tmw-slot-machine--lux .slot-headline {
     font-size: 11px;
     top: 14px;
+    width: calc(100% - 40px);
+    white-space: normal;
+    text-align: center;
   }
   
   .tmw-slot-machine.tmw-slot-machine--lux .slot-body {
@@ -350,8 +355,9 @@ if (!is_string($trigger_headline) || $trigger_headline === '') {
   }
   
   .tmw-slot-machine.tmw-slot-machine--lux .slot-left .slot-btn {
-    width: 200px;
-    min-width: 200px;
+    width: min(200px, 100%);
+    min-width: 0;
+    box-sizing: border-box;
   }
   
   .tmw-slot-machine.tmw-slot-machine--lux .slot-left .slot-sound {
@@ -375,8 +381,9 @@ if (!is_string($trigger_headline) || $trigger_headline === '') {
   }
   
   .tmw-slot-machine.tmw-slot-machine--lux .tmw-claim-bonus {
-    width: 200px;
-    min-width: 200px;
+    width: min(200px, 100%);
+    min-width: 0;
+    box-sizing: border-box;
   }
   
   /* Sound toggle at VERY BOTTOM */
